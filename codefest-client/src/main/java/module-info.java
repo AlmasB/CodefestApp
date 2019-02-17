@@ -4,6 +4,11 @@
 module codefest.client {
     requires codefest.common;
     requires javafx.controls;
+    requires javafx.fxml;
 
-    exports codefest to javafx.graphics;
+    requires java.net.http;
+
+    opens codefest to javafx.fxml;
+
+    exports codefest to javafx.graphics, javafx.fxml;
 }

@@ -1,0 +1,9 @@
+@font-face {
+    font-family: Segan-Light;
+    src: url('fonts/Segan-Light.ttf');
+}
+
+.text {
+    -fx-font-family: Segan-Light;
+    -fx-font-size: 18px;
+}

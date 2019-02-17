@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="codefest.MainController"
+            fx:id="root"
+            prefHeight="600.0" prefWidth="800.0">
+
+    <stylesheets>
+        <URL value="@main.css" />
+    </stylesheets>
+
+    <top>
+        <Label text="Toolbox area" />
+    </top>
+
+    <bottom>
+        <Label text="Info area" />
+    </bottom>
+
+</BorderPane>

@@ -11,6 +11,14 @@
 
     <artifactId>codefest-common</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <!-- Compile java -->

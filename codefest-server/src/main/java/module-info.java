@@ -3,4 +3,5 @@
  */
 module codefest.server {
     requires codefest.common;
+    requires spark.core;
 }
