@@ -1,22 +1,12 @@
 package codefest
 
-import codefest.data.Student
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
-import javafx.scene.layout.StackPane
-import javafx.scene.text.Text
 import javafx.stage.Stage
 
-import java.net.http.HttpResponse.BodyHandlers
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpClient.newHttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
-
 /**
+ * Codefest client application entry point.
  *
  * @author Almas Baimagambetov (almaslvl@gmail.com)
  */
