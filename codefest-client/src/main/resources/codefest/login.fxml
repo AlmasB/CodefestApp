@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="codefest.LoginController">
+
+    <VBox spacing="5" alignment="CENTER" maxWidth="250">
+
+        <TextField fx:id="fieldFirstName" promptText="First name" />
+        <TextField fx:id="fieldLastName" promptText="Last name" />
+        <PasswordField fx:id="fieldPassword" promptText="Password" />
+
+        <Button fx:id="btnLogin" text="Login" onAction="#onLogin" prefWidth="100" />
+
+    </VBox>
+
+</StackPane>

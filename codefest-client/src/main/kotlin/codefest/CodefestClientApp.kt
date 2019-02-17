@@ -18,7 +18,7 @@ class CodefestClientApp : Application() {
 
         stage.title = "Codefest Client"
 
-        stage.scene = Scene(FXMLLoader.load(javaClass.getResource("main.fxml")))
+        stage.scene = Scene(FXMLLoader.load(javaClass.getResource("login.fxml")))
         stage.show()
     }
 }

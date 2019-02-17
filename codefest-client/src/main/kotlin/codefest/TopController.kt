@@ -21,16 +21,10 @@ class TopController {
     private lateinit var listView: ListView<Student>
 
     fun initialize() {
-        val client = HttpClient.newHttpClient()
-        val request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:55555/top"))
-                .build()
 
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply { it.body() }
-                .thenApply { jacksonObjectMapper().readValue(it, Leaderboard::class.java) }
-                .thenAccept { updateListView(it) }
-                .join()
+
+
+
     }
 
     private fun updateListView(leaderboard: Leaderboard) {
