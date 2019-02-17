@@ -15,27 +15,33 @@ class MainController {
     @FXML
     private lateinit var root: BorderPane
 
+    private val views = hashMapOf<String, Parent>()
+
     fun initialize() {
-        root.center = FXMLLoader.load(javaClass.getResource("submit.fxml"))
+        onHome()
     }
 
     fun onHome() {
-
+        setView("home.fxml")
     }
 
     fun onLeaderboard() {
-        setView(FXMLLoader.load(javaClass.getResource("top.fxml")))
+        setView("top.fxml")
     }
 
     fun onChallenges() {
-
+        setView("submit.fxml")
     }
 
     fun onExit() {
         Platform.exit()
     }
 
-    private fun setView(parent: Parent) {
-        root.center = parent
+    private fun setView(viewName: String) {
+        if (viewName !in views) {
+            views[viewName] = FXMLLoader.load(javaClass.getResource(viewName))
+        }
+
+        root.center = views[viewName]
     }
 }
