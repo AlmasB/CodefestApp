@@ -8,18 +8,24 @@
 
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="codefest.MainController"
             fx:id="root"
             prefHeight="600.0" prefWidth="800.0">
 
-    <stylesheets>
-        <URL value="@main.css" />
-    </stylesheets>
-
     <top>
-        <Label text="Toolbox area" />
+        <HBox spacing="10">
+            <padding>
+                <Insets topRightBottomLeft="5" />
+            </padding>
+
+            <Button text="Home" onAction="#onHome" />
+            <Button text="Leaderboard" onAction="#onLeaderboard" />
+            <Button text="Challenges" onAction="#onChallenges" />
+            <Button text="Exit" onAction="#onExit" />
+        </HBox>
     </top>
 
     <bottom>

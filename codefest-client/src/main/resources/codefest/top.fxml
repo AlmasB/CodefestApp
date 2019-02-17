@@ -8,32 +8,14 @@
 
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
-<BorderPane xmlns="http://javafx.com/javafx"
+<StackPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="codefest.MainController"
-            prefHeight="600.0" prefWidth="800.0">
+            fx:controller="codefest.TopController">
 
     <stylesheets>
         <URL value="@main.css" />
     </stylesheets>
 
-    <top>
-        <Label text="Toolbox area" />
-    </top>
+    <ListView fx:id="listView" />
 
-    <left>
-        <VBox>
-            <Label text="Challenge info" />
-            <TextArea text="Server output" />
-        </VBox>
-    </left>
-
-    <center>
-        <TextArea text="Client input" />
-    </center>
-
-    <bottom>
-        <Label text="Info area" />
-    </bottom>
-
-</BorderPane>
+</StackPane>

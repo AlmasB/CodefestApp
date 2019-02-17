@@ -22,19 +22,6 @@ import java.net.http.HttpResponse
  */
 class CodefestClientApp : Application() {
 
-//    override fun init() {
-//        val client = HttpClient.newHttpClient()
-//        val request = HttpRequest.newBuilder()
-//                .uri(URI.create("http://localhost:55555/top"))
-//                .build()
-//
-//        client.sendAsync(request, BodyHandlers.ofString())
-//                .thenApply { it.body() }
-//                .thenApply { jacksonObjectMapper().readValue(it, Student::class.java) }
-//                .thenAccept { println(it.firstName) }
-//                .join()
-//    }
-
     override fun start(stage: Stage) {
         stage.minWidth = 800.0
         stage.minHeight = 600.0

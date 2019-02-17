@@ -7,10 +7,15 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
+<?import java.net.URL?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="codefest.SubmitController"
       spacing="15">
+
+    <stylesheets>
+        <URL value="@main.css" />
+    </stylesheets>
 
     <padding>
         <Insets topRightBottomLeft="10" />
