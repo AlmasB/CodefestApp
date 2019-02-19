@@ -16,10 +16,11 @@ class TopController {
     private lateinit var listView: ListView<Student>
 
     fun initialize() {
-
-
-
-
+        Server.requestLeaderboard {
+            onSuccess = {
+                updateListView(it)
+            }
+        }
     }
 
     private fun updateListView(leaderboard: Leaderboard) {

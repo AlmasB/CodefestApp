@@ -1,7 +1,12 @@
 package codefest.server
 
 import codefest.common.Config
+import codefest.common.Config.Companion.PATH_CHALLENGES
+import codefest.common.Config.Companion.PATH_LEADERBOARD
+import codefest.common.Config.Companion.PATH_LOGIN
+import codefest.common.Config.Companion.PATH_LOGOUT
 import codefest.common.Config.Companion.PATH_PING
+import codefest.common.data.Challenge
 import codefest.common.data.Leaderboard
 import codefest.common.data.Student
 import com.almasb.sslogger.ConsoleOutput
@@ -16,9 +21,11 @@ import java.util.concurrent.atomic.AtomicLong
 
 private val log = Logger.get("Codefest Server")
 
-private val activeUsers = CopyOnWriteArrayList<Student>()
+private val dbUsers = CopyOnWriteArrayList<User>()
 
-// id starts at 1
+private val activeUsers = CopyOnWriteArrayList<User>()
+
+// runtimeID starts at 1
 private val nextActive = AtomicLong(1)
 
 fun main() {
@@ -29,34 +36,67 @@ fun main() {
 
     port(Config.PORT)
 
-    get("/top") { req, res ->
-
-        val students = listOf(
-                Student("AA", "BB", mutableListOf(1, 2, 5)),
-                Student("CC", "DD", mutableListOf(1, 2, 4)),
-                Student("EE", "FF", mutableListOf(1, 3, 6)),
-                Student("GG", "HH", mutableListOf(1, 7, 8)),
-                Student("II", "JJ", mutableListOf(1, 4, 5))
-        )
-
-        jacksonObjectMapper().writeValueAsString(Leaderboard(students))
-    }
-
-    get("/login", onLogin)
-
-    get(PATH_PING, onPing)
+    setUpRoutes()
 }
 
-private val onPing = Route { req, res ->
+private fun setUpRoutes() {
+    get(PATH_LEADERBOARD, onLeaderboard)
+    get(PATH_LOGIN, onLogin)
+    get(PATH_LOGOUT, onLogout)
+    get(PATH_PING, onPing)
+    get(PATH_CHALLENGES, onChallenges)
+}
+
+private val onPing = Route { _, _ ->
     "OK"
 }
 
 private val onLogin = Route { req, res ->
+    val firstName = req.queryParams("first")
+    val lastName = req.queryParams("last")
+    val password = req.queryParams("pass")
 
-    val firstName = req.queryParams("firstName")
-    val lastName = req.queryParams("lastName")
+    log.debug("Received login request from: $firstName $lastName")
 
-    //log.debug("Received login request with params: ${req.queryParams("user")}")
+    val user = dbUsers.find { it.student.firstName == firstName && it.student.lastName == lastName && it.password == password }
 
-    nextActive.getAndIncrement()
+    user?.let {
+        val id = nextActive.getAndIncrement()
+
+        it.runtimeID = id
+
+        activeUsers += it
+
+        return@Route id
+    }
+
+    return@Route -1L
+}
+
+private val onLogout = Route { req, _ ->
+    val id = req.queryParams("id").toLong()
+
+    activeUsers.removeIf { it.runtimeID == id }
+
+    "OK"
+}
+
+private val onLeaderboard = Route { _, _ ->
+    val students = listOf(
+            Student("AA", "BB", mutableListOf(1, 2, 5)),
+            Student("CC", "DD", mutableListOf(1, 2, 4)),
+            Student("EE", "FF", mutableListOf(1, 3, 6)),
+            Student("GG", "HH", mutableListOf(1, 7, 8)),
+            Student("II", "JJ", mutableListOf(1, 4, 5))
+    )
+
+    jacksonObjectMapper().writeValueAsString(Leaderboard(students))
+}
+
+private val onChallenges = Route { _, _ ->
+    val challenges = listOf(
+            Challenge(1, "This is a simple question")
+    )
+
+    jacksonObjectMapper().writeValueAsString(challenges.first())
 }

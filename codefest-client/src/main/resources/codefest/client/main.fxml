@@ -24,7 +24,6 @@
             <Button text="Home" onAction="#onHome" />
             <Button text="Leaderboard" onAction="#onLeaderboard" />
             <Button text="Challenges" onAction="#onChallenges" />
-            <Button text="Exit" onAction="#onExit" />
         </HBox>
     </top>
 

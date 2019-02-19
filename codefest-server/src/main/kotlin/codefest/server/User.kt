@@ -9,6 +9,7 @@ import codefest.common.data.Student
 data class User(
         val student: Student,
         val password: String,
-        val id: Long
+        var runtimeID: Long,
+        val lastAccess: Long
 ) {
 }

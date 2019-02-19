@@ -1,6 +1,5 @@
 package codefest.client
 
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -31,10 +30,6 @@ class MainController {
 
     fun onChallenges() {
         setView("submit.fxml")
-    }
-
-    fun onExit() {
-        Platform.exit()
     }
 
     private fun setView(viewName: String) {
