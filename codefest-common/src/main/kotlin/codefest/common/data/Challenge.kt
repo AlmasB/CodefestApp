@@ -1,4 +1,4 @@
-package codefest.data
+package codefest.common.data
 
 /**
  *

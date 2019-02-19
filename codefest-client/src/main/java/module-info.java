@@ -8,7 +8,7 @@ module codefest.client {
 
     requires java.net.http;
 
-    opens codefest to javafx.fxml;
+    opens codefest.client to javafx.fxml;
 
-    exports codefest to javafx.graphics, javafx.fxml;
+    exports codefest.client to javafx.graphics, javafx.fxml;
 }

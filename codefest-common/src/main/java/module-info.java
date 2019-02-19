@@ -9,7 +9,8 @@ module codefest.common {
     requires transitive com.fasterxml.jackson.databind;
     requires transitive com.fasterxml.jackson.module.kotlin;
 
-    opens codefest.data to com.fasterxml.jackson.databind;
+    opens codefest.common.data to com.fasterxml.jackson.databind;
 
-    exports codefest.data;
+    exports codefest.common;
+    exports codefest.common.data;
 }

@@ -1,22 +1,20 @@
-package codefest
+package codefest.server
 
-import codefest.data.Leaderboard
-import codefest.data.Student
+import codefest.common.Config
+import codefest.common.Config.Companion.PATH_PING
+import codefest.common.data.Leaderboard
+import codefest.common.data.Student
 import com.almasb.sslogger.ConsoleOutput
 import com.almasb.sslogger.Logger
 import com.almasb.sslogger.LoggerConfig
 import com.almasb.sslogger.LoggerLevel
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import spark.Request
-import spark.Response
 import spark.Route
 import spark.Spark.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicLong
 
 private val log = Logger.get("Codefest Server")
-
-private const val PORT = 55555
 
 private val activeUsers = CopyOnWriteArrayList<Student>()
 
@@ -27,9 +25,9 @@ fun main() {
     Logger.configure(LoggerConfig())
     Logger.addOutput(ConsoleOutput(), LoggerLevel.DEBUG)
 
-    log.info("Starting server on port: $PORT")
+    log.info("Starting server on port: ${Config.PORT}")
 
-    port(PORT)
+    port(Config.PORT)
 
     get("/top") { req, res ->
 
@@ -45,6 +43,12 @@ fun main() {
     }
 
     get("/login", onLogin)
+
+    get(PATH_PING, onPing)
+}
+
+private val onPing = Route { req, res ->
+    "OK"
 }
 
 private val onLogin = Route { req, res ->

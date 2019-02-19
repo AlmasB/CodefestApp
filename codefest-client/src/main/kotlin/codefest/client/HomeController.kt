@@ -1,4 +1,4 @@
-package codefest
+package codefest.client
 
 /**
  *

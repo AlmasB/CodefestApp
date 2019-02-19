@@ -12,9 +12,13 @@
 
 <StackPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="codefest.LoginController">
+            fx:controller="codefest.client.LoginController">
 
     <VBox spacing="5" alignment="CENTER" maxWidth="250">
+
+        <Label fx:id="labelStatus" text="Server status: " />
+
+        <Separator />
 
         <TextField fx:id="fieldFirstName" promptText="First name" />
         <TextField fx:id="fieldLastName" promptText="Last name" />

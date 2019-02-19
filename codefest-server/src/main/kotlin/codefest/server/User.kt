@@ -1,6 +1,6 @@
-package codefest
+package codefest.server
 
-import codefest.data.Student
+import codefest.common.data.Student
 
 /**
  *

@@ -1,5 +1,9 @@
-package codefest
+package codefest.client
 
+import com.almasb.sslogger.ConsoleOutput
+import com.almasb.sslogger.Logger
+import com.almasb.sslogger.LoggerConfig
+import com.almasb.sslogger.LoggerLevel
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
@@ -24,5 +28,8 @@ class CodefestClientApp : Application() {
 }
 
 fun main() {
+    Logger.configure(LoggerConfig())
+    Logger.addOutput(ConsoleOutput(), LoggerLevel.DEBUG)
+
     Application.launch(CodefestClientApp::class.java)
 }

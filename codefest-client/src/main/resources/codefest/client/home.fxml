@@ -10,12 +10,12 @@
 <?import java.net.URL?>
 <StackPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="codefest.TopController">
+            fx:controller="codefest.client.HomeController">
 
     <stylesheets>
         <URL value="@main.css" />
     </stylesheets>
 
-    <ListView fx:id="listView" />
+    <Label text="This is Home page" />
 
 </StackPane>

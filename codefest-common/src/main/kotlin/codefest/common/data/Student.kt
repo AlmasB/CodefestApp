@@ -1,4 +1,4 @@
-package codefest.data
+package codefest.common.data
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
