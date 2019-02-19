@@ -26,9 +26,13 @@
             <Label fx:id="labelChallenge" text="Challenge info" />
         </VBox>
 
-        <TextArea text="Server output" />
+        <HBox>
+            <Button text="Submit" onAction="#onSubmit" />
+        </HBox>
+
+        <TextArea fx:id="areaOutput" text="Server output" />
     </VBox>
 
-    <TextArea text="Client input" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+    <TextArea fx:id="areaInput" text="Client input" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
 
 </HBox>

@@ -7,6 +7,7 @@ import codefest.common.Config.Companion.PORT
 import codefest.common.Config.Companion.PATH_PING
 import codefest.common.Config.Companion.PATH_LOGIN
 import codefest.common.data.Challenge
+import codefest.common.data.Codefest
 import codefest.common.data.Leaderboard
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import javafx.application.Platform
@@ -54,12 +55,12 @@ object Server {
         request("$IP:$PORT$PATH_PING", fn, response.onFailure)
     }
 
-    fun requestChallenges(action: IOResponse<Challenge>.() -> Unit) {
-        val response = IOResponse<Challenge>()
+    fun requestChallenges(action: IOResponse<Codefest>.() -> Unit) {
+        val response = IOResponse<Codefest>()
         action(response)
 
         val fn = { s: String ->
-            val converted = jacksonObjectMapper().readValue(s, Challenge::class.java)
+            val converted = jacksonObjectMapper().readValue(s, Codefest::class.java)
 
             response.onSuccess?.invoke(converted) ?: Unit
         }

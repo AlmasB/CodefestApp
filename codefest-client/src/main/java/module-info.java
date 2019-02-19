@@ -7,6 +7,7 @@ module codefest.client {
     requires javafx.fxml;
 
     requires java.net.http;
+    requires java.compiler;
 
     opens codefest.client to javafx.fxml;
 

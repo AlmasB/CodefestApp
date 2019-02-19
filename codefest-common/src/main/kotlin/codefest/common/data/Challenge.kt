@@ -6,6 +6,17 @@ package codefest.common.data
  */
 data class Challenge(
         val id: Int,
-        val text: String
-) {
-}
+
+        // method signature, e.g.
+        // public int challenge(String a, int b)
+        val signature: String,
+
+        val params: List<ChallengeParams>
+)
+
+data class ChallengeParams(
+        val output: Any,
+        val inputs: List<Any>
+)
+
+data class Codefest(val challenges: List<Challenge>)

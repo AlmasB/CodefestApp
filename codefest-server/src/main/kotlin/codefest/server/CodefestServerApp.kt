@@ -6,9 +6,7 @@ import codefest.common.Config.Companion.PATH_LEADERBOARD
 import codefest.common.Config.Companion.PATH_LOGIN
 import codefest.common.Config.Companion.PATH_LOGOUT
 import codefest.common.Config.Companion.PATH_PING
-import codefest.common.data.Challenge
-import codefest.common.data.Leaderboard
-import codefest.common.data.Student
+import codefest.common.data.*
 import com.almasb.sslogger.ConsoleOutput
 import com.almasb.sslogger.Logger
 import com.almasb.sslogger.LoggerConfig
@@ -95,8 +93,15 @@ private val onLeaderboard = Route { _, _ ->
 
 private val onChallenges = Route { _, _ ->
     val challenges = listOf(
-            Challenge(1, "This is a simple question")
+            Challenge(1, "public int challenge(String a, int b)", listOf(
+                    ChallengeParams(5, listOf("Hello", 0)),
+                    ChallengeParams(7, listOf("Hello w", 0)),
+                    ChallengeParams(5, listOf("Hello World", 6)),
+                    ChallengeParams(-2, listOf("Hello", 7))
+            ))
     )
 
-    jacksonObjectMapper().writeValueAsString(challenges.first())
+    val codefest = Codefest(challenges)
+
+    jacksonObjectMapper().writeValueAsString(codefest)
 }
