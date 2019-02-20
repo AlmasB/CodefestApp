@@ -20,9 +20,9 @@
 
         <Separator />
 
-        <TextField fx:id="fieldFirstName" promptText="First name" />
-        <TextField fx:id="fieldLastName" promptText="Last name" />
-        <PasswordField fx:id="fieldPassword" promptText="Password" />
+        <TextField fx:id="fieldFirstName" promptText="First name" text="Almas" />
+        <TextField fx:id="fieldLastName" promptText="Last name" text="Baim" />
+        <PasswordField fx:id="fieldPassword" promptText="Password" text="test" />
 
         <Button fx:id="btnLogin" text="Login" onAction="#onLogin" prefWidth="100" />
 

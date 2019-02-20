@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 data class Student(
         val firstName: String,
         val lastName: String,
-        val solvedChallenges: MutableList<Int> = arrayListOf()
+        val solvedChallenges: MutableSet<Int> = mutableSetOf()
 ) {
     val numSolvedChallenges
         get() = solvedChallenges.size

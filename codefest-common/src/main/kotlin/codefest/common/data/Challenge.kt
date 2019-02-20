@@ -11,7 +11,13 @@ data class Challenge(
         // public int challenge(String a, int b)
         val signature: String,
 
+        //val paramTypes: ChallengeParamTypes,
         val params: List<ChallengeParams>
+)
+
+data class ChallengeParamTypes(
+        val output: Class<*>,
+        val inputs: List<Class<*>>
 )
 
 data class ChallengeParams(

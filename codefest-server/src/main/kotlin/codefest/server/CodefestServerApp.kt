@@ -18,6 +18,8 @@ import spark.Spark.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicLong
 
+// TODO: what to return instead of OK and NOT_OK
+
 private val log = Logger.get("Codefest Server")
 
 private val dbUsers = CopyOnWriteArrayList<User>()
@@ -37,6 +39,7 @@ fun main() {
 
     setUpRoutes()
 
+    // TODO: debug user
     dbUsers += User(Student("Almas", "Baim"), "test", 1, 0)
 }
 
@@ -54,68 +57,75 @@ private val onPing = Route { _, _ ->
     "OK"
 }
 
-private val onLogin = Route { req, res ->
+private val onLogin = Route { req, _ ->
     val firstName = req.queryParams("first")
     val lastName = req.queryParams("last")
     val password = req.queryParams("pass")
 
     log.debug("Received login request from: $firstName $lastName")
 
-    val user = dbUsers.find { it.student.firstName == firstName && it.student.lastName == lastName && it.password == password }
-
-    user?.let {
-        val id = nextActive.getAndIncrement()
-
-        it.runtimeID = id
-
-        activeUsers += it
-
-        return@Route id
+    // in case user already logged in
+    val removed = activeUsers.removeIf { it.student.firstName == firstName && it.student.lastName == lastName && it.password == password }
+    if (removed) {
+        log.debug("Removed already logged in user $firstName $lastName")
     }
+
+    dbUsers.find { it.student.firstName == firstName && it.student.lastName == lastName && it.password == password }
+            ?.let {
+                val id = nextActive.getAndIncrement()
+
+                it.runtimeID = id
+
+                activeUsers += it
+
+                log.info("Num active users: ${activeUsers.size}")
+
+                return@Route id
+            }
+
+    log.debug("Login failed")
 
     return@Route -1L
 }
 
-private val onLogout = Route { req, _ ->
-    val id = req.queryParams("id").toLong()
+// TODO: nicer way of sanity checking the params?
 
-    activeUsers.removeIf { it.runtimeID == id }
+private val onLogout = Route { req, _ ->
+
+    val id = req.queryParams("id")?.toLong() ?: return@Route "NOT OK"
+
+    log.debug("Logout request from id: $id")
+
+    val removed = activeUsers.removeIf { it.runtimeID == id }
+
+    if (removed) {
+        log.info("Num active users: ${activeUsers.size}")
+    } else {
+        log.debug("$id not found in active users")
+    }
 
     "OK"
 }
 
 private val onLeaderboard = Route { _, _ ->
     val students = dbUsers.map { it.student }
+            .sortedByDescending { it.numSolvedChallenges }
+            .take(5)
 
     jacksonObjectMapper().writeValueAsString(Leaderboard(students))
 }
 
 private val onChallenges = Route { _, _ ->
     val challenges = listOf(
-            Challenge(1, "public int challenge(String a, int b)", listOf(
-                    ChallengeParams(5, listOf("Hello", 0)),
-                    ChallengeParams(7, listOf("Hello w", 0)),
-                    ChallengeParams(5, listOf("Hello World", 6)),
-                    ChallengeParams(-2, listOf("Hello", 7))
-            )),
-            Challenge(2, "public int challenge(String a, int b)", listOf(
-                    ChallengeParams(1, listOf("Hello", 0)),
-                    ChallengeParams(8, listOf("Hello w", 0)),
-                    ChallengeParams(5, listOf("Hello World", 6)),
-                    ChallengeParams(-2, listOf("Hello", 7))
-            )),
-            Challenge(3, "public int challenge(String a, int b)", listOf(
-                    ChallengeParams(0, listOf("Hello", 0)),
-                    ChallengeParams(7, listOf("Hello w", 0)),
-                    ChallengeParams(5, listOf("Hello World", 6)),
-                    ChallengeParams(-2, listOf("Hello", 7))
-            )),
-            Challenge(4, "public int challenge(String a, int b)", listOf(
-                    ChallengeParams(3, listOf("Hello", 0)),
-                    ChallengeParams(7, listOf("Hello w", 0)),
-                    ChallengeParams(5, listOf("Hello World", 6)),
-                    ChallengeParams(-2, listOf("Hello", 7))
-            ))
+            Challenge(1, "public int challenge(String a, int b)",
+                    //ChallengeParamTypes(Int::class.java, listOf(String::class.java, Int::class.java)),
+                    listOf(
+                            ChallengeParams(5, listOf("Hello", 0)),
+                            ChallengeParams(7, listOf("Hello w", 0)),
+                            ChallengeParams(5, listOf("Hello World", 6)),
+                            ChallengeParams(-2, listOf("Hello", 7))
+                    )
+            )
     )
 
     val codefest = Codefest(challenges)
@@ -125,14 +135,12 @@ private val onChallenges = Route { _, _ ->
 
 private val onSubmit = Route { req, _ ->
     // check token first
-    val id = req.queryParams("id").toLong()
+    val id = req.queryParams("id")?.toLong() ?: return@Route "NOT OK"
 
     // get challenge id that passed tests
-    val challengeID = req.queryParams("challengeID").toInt()
+    val challengeID = req.queryParams("challengeID")?.toInt() ?: return@Route "NOT OK"
 
-    findUser(id)?.apply {
-        student.solvedChallenges += challengeID
-    }
+    findUser(id)?.apply { student.solvedChallenges += challengeID } ?: return@Route "NOT OK"
 
     "OK"
 }

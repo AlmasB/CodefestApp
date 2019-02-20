@@ -137,7 +137,9 @@ class SubmitController {
                 val m = obj.javaClass.declaredMethods.find { it.name == "challenge" }!!
 
                 challenge.params.forEach {
-                    val inputs = m.parameterTypes.zip(it.inputs).map { (paramType, input) -> paramType.cast(input) }
+                    //val inputs = challenge.paramTypes.inputs.zip(it.inputs).map { (paramType, input) -> paramType.cast(input) }
+
+                    val inputs = m.parameterTypes.zip(it.inputs.map { normalize(it) }).map { (paramType, input) -> paramType.cast(input) }
 
                     val result = m.invoke(obj, *inputs.toTypedArray())
 
@@ -157,6 +159,17 @@ class SubmitController {
             fileManager.close()
 
             return null
+        }
+
+        private fun normalize(o: Any): Any = when(o) {
+            is java.lang.Integer -> {
+                println("$o is Integer")
+                Int::class.javaPrimitiveType!!.cast(o)
+            }
+            is java.lang.Long -> o.toLong()
+            is java.lang.Float -> o.toFloat()
+            is java.lang.Double -> o.toDouble()
+            else -> o
         }
 
         override fun failed() {

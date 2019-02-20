@@ -6,6 +6,7 @@ import codefest.common.Config.Companion.PATH_LEADERBOARD
 import codefest.common.Config.Companion.PORT
 import codefest.common.Config.Companion.PATH_PING
 import codefest.common.Config.Companion.PATH_LOGIN
+import codefest.common.Config.Companion.PATH_LOGOUT
 import codefest.common.Config.Companion.PATH_SUBMIT
 import codefest.common.data.Challenge
 import codefest.common.data.Codefest
@@ -45,6 +46,19 @@ object Server {
         }
 
         request("$IP:$PORT$PATH_LOGIN?first=$firstName&last=$lastName&pass=$password", fn, response.onFailure)
+    }
+
+    fun requestLogout(action: IOResponse<String>.() -> Unit) {
+        val response = IOResponse<String>()
+        action(response)
+
+        val fn = { s: String ->
+            val converted = (s)
+
+            response.onSuccess?.invoke(converted) ?: Unit
+        }
+
+        request("$IP:$PORT$PATH_LOGOUT?id=$token", fn, response.onFailure)
     }
 
     fun requestPing(action: IOResponse<String>.() -> Unit) {

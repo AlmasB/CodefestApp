@@ -15,7 +15,7 @@ class Config {
 
         const val PATH_PING = "/ping"
         const val PATH_LOGIN = "/login"
-        const val PATH_LOGOUT = "/login"
+        const val PATH_LOGOUT = "/logout"
         const val PATH_LEADERBOARD = "/leaderboard"
         const val PATH_CHALLENGES = "/challenges"
 
