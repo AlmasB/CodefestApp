@@ -6,6 +6,7 @@ import codefest.common.Config.Companion.PATH_LEADERBOARD
 import codefest.common.Config.Companion.PORT
 import codefest.common.Config.Companion.PATH_PING
 import codefest.common.Config.Companion.PATH_LOGIN
+import codefest.common.Config.Companion.PATH_SUBMIT
 import codefest.common.data.Challenge
 import codefest.common.data.Codefest
 import codefest.common.data.Leaderboard
@@ -29,12 +30,16 @@ import java.net.http.HttpResponse
 object Server {
     private val client by lazy { HttpClient.newHttpClient() }
 
+    private var token: Long = -1
+
     fun requestLogin(firstName: String, lastName: String, password: String, action: IOResponse<Long>.() -> Unit) {
         val response = IOResponse<Long>()
         action(response)
 
         val fn = { s: String ->
             val converted = (s.toLong())
+
+            token = converted
 
             response.onSuccess?.invoke(converted) ?: Unit
         }
@@ -79,6 +84,32 @@ object Server {
         }
 
         request("$IP:$PORT$PATH_LEADERBOARD", fn, response.onFailure)
+    }
+
+    fun requestSubmit(challengeID: Int) {
+        val request = HttpRequest.newBuilder()
+                .PUT(HttpRequest.BodyPublishers.ofString(""))
+                .uri(URI.create("http://$IP:$PORT$PATH_SUBMIT?id=$token&challengeID=$challengeID"))
+                .build()
+
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply { it.body() }
+                .whenCompleteAsync { result, error ->
+                    if (result != null) {
+                        println(result)
+//                        Platform.runLater {
+//                            onSuccess(result)
+//                        }
+                    } else if (error != null) {
+//                        Platform.runLater {
+//                            onFail(error)
+//                        }
+                    } else {
+//                        Platform.runLater {
+//                            onFail(RuntimeException("Both result and error were null!"))
+//                        }
+                    }
+                }
     }
 
     private fun request(reqURI: String, onSuccess: (String) -> Unit, onFail: (Throwable) -> Unit) {

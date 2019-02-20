@@ -6,6 +6,7 @@ import codefest.common.Config.Companion.PATH_LEADERBOARD
 import codefest.common.Config.Companion.PATH_LOGIN
 import codefest.common.Config.Companion.PATH_LOGOUT
 import codefest.common.Config.Companion.PATH_PING
+import codefest.common.Config.Companion.PATH_SUBMIT
 import codefest.common.data.*
 import com.almasb.sslogger.ConsoleOutput
 import com.almasb.sslogger.Logger
@@ -35,6 +36,8 @@ fun main() {
     port(Config.PORT)
 
     setUpRoutes()
+
+    dbUsers += User(Student("Almas", "Baim"), "test", 1, 0)
 }
 
 private fun setUpRoutes() {
@@ -43,6 +46,8 @@ private fun setUpRoutes() {
     get(PATH_LOGOUT, onLogout)
     get(PATH_PING, onPing)
     get(PATH_CHALLENGES, onChallenges)
+
+    put(PATH_SUBMIT, onSubmit)
 }
 
 private val onPing = Route { _, _ ->
@@ -80,13 +85,7 @@ private val onLogout = Route { req, _ ->
 }
 
 private val onLeaderboard = Route { _, _ ->
-    val students = listOf(
-            Student("AA", "BB", mutableListOf(1, 2, 5)),
-            Student("CC", "DD", mutableListOf(1, 2, 4)),
-            Student("EE", "FF", mutableListOf(1, 3, 6)),
-            Student("GG", "HH", mutableListOf(1, 7, 8)),
-            Student("II", "JJ", mutableListOf(1, 4, 5))
-    )
+    val students = dbUsers.map { it.student }
 
     jacksonObjectMapper().writeValueAsString(Leaderboard(students))
 }
@@ -100,19 +99,19 @@ private val onChallenges = Route { _, _ ->
                     ChallengeParams(-2, listOf("Hello", 7))
             )),
             Challenge(2, "public int challenge(String a, int b)", listOf(
-                    ChallengeParams(5, listOf("Hello", 0)),
-                    ChallengeParams(7, listOf("Hello w", 0)),
+                    ChallengeParams(1, listOf("Hello", 0)),
+                    ChallengeParams(8, listOf("Hello w", 0)),
                     ChallengeParams(5, listOf("Hello World", 6)),
                     ChallengeParams(-2, listOf("Hello", 7))
             )),
             Challenge(3, "public int challenge(String a, int b)", listOf(
-                    ChallengeParams(5, listOf("Hello", 0)),
+                    ChallengeParams(0, listOf("Hello", 0)),
                     ChallengeParams(7, listOf("Hello w", 0)),
                     ChallengeParams(5, listOf("Hello World", 6)),
                     ChallengeParams(-2, listOf("Hello", 7))
             )),
             Challenge(4, "public int challenge(String a, int b)", listOf(
-                    ChallengeParams(5, listOf("Hello", 0)),
+                    ChallengeParams(3, listOf("Hello", 0)),
                     ChallengeParams(7, listOf("Hello w", 0)),
                     ChallengeParams(5, listOf("Hello World", 6)),
                     ChallengeParams(-2, listOf("Hello", 7))
@@ -123,3 +122,19 @@ private val onChallenges = Route { _, _ ->
 
     jacksonObjectMapper().writeValueAsString(codefest)
 }
+
+private val onSubmit = Route { req, _ ->
+    // check token first
+    val id = req.queryParams("id").toLong()
+
+    // get challenge id that passed tests
+    val challengeID = req.queryParams("challengeID").toInt()
+
+    findUser(id)?.apply {
+        student.solvedChallenges += challengeID
+    }
+
+    "OK"
+}
+
+private fun findUser(id: Long) = activeUsers.find { it.runtimeID == id }
