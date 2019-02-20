@@ -12,10 +12,6 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="codefest.client.HomeController">
 
-    <stylesheets>
-        <URL value="@main.css" />
-    </stylesheets>
-
     <Label text="This is Home page" />
 
 </StackPane>

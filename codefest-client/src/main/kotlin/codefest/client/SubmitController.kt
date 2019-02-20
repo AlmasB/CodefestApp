@@ -1,8 +1,12 @@
 package codefest.client
 
 import codefest.common.data.Challenge
+import javafx.beans.binding.Bindings
+import javafx.beans.binding.Bindings.*
+import javafx.collections.FXCollections
 import javafx.concurrent.Task
 import javafx.fxml.FXML
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TextArea
 
@@ -13,8 +17,6 @@ import javax.tools.JavaFileObject
 import javax.tools.ToolProvider
 import java.net.URI
 import javax.tools.SimpleJavaFileObject
-
-
 
 /**
  *
@@ -28,12 +30,25 @@ class SubmitController {
     private lateinit var areaOutput: TextArea
     @FXML
     private lateinit var areaInput: TextArea
+    @FXML
+    private lateinit var btnSubmit: Button
+    @FXML
+    private lateinit var btnPrev: Button
+    @FXML
+    private lateinit var btnNext: Button
 
+    private val challenges = FXCollections.observableArrayList<Challenge>()
     private lateinit var selectedChallenge: Challenge
+    private var challengeIndex = 0
 
     fun initialize() {
+        btnSubmit.disableProperty().bind(isEmpty(challenges))
+        btnPrev.disableProperty().bind(isEmpty(challenges))
+        btnNext.disableProperty().bind(isEmpty(challenges))
+
         Server.requestChallenges {
             onSuccess = {
+                challenges += it.challenges
                 selectChallenge(it.challenges.first())
             }
         }
@@ -42,7 +57,7 @@ class SubmitController {
     private fun selectChallenge(challenge: Challenge) {
         selectedChallenge = challenge
 
-        var text = ""
+        var text = "Challenge N${challenge.id}\n\n"
 
         challenge.params.forEach {
             text += "challenge(${it.inputs.joinToString(", ")}) is ${it.output}\n"
@@ -58,6 +73,22 @@ class SubmitController {
         sb.append("}\n")
 
         areaInput.text = sb.toString()
+    }
+
+    fun onPrev() {
+        if (challengeIndex == 0)
+            return
+
+        challengeIndex--
+        selectChallenge(challenges[challengeIndex])
+    }
+
+    fun onNext() {
+        if (challengeIndex == challenges.size - 1)
+            return
+
+        challengeIndex++
+        selectChallenge(challenges[challengeIndex])
     }
 
     fun onSubmit() {

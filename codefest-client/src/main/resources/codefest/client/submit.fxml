@@ -21,18 +21,20 @@
         <Insets topRightBottomLeft="10" />
     </padding>
 
-    <VBox alignment="BOTTOM_LEFT" prefWidth="400" maxWidth="400" minWidth="400">
+    <VBox spacing="10" alignment="BOTTOM_LEFT" prefWidth="400" maxWidth="400" minWidth="400">
         <VBox maxHeight="Infinity" VBox.vgrow="ALWAYS">
             <Label fx:id="labelChallenge" text="Challenge info" />
         </VBox>
 
-        <HBox>
-            <Button text="Submit" onAction="#onSubmit" />
+        <HBox spacing="5">
+            <Button fx:id="btnSubmit" text="Submit" onAction="#onSubmit" />
+            <Button fx:id="btnPrev" text="Prev" onAction="#onPrev" />
+            <Button fx:id="btnNext" text="Next" onAction="#onNext" />
         </HBox>
 
-        <TextArea fx:id="areaOutput" text="Server output" />
+        <TextArea fx:id="areaOutput" editable="false" />
     </VBox>
 
-    <TextArea fx:id="areaInput" text="Client input" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+    <TextArea fx:id="areaInput" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
 
 </HBox>

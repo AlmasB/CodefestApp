@@ -3,7 +3,17 @@
     src: url('fonts/Segan-Light.ttf');
 }
 
+@font-face {
+    font-family: Lucida-Console;
+    src: url('fonts/Lucida-Console.ttf');
+}
+
 .text {
     -fx-font-family: Segan-Light;
     -fx-font-size: 18px;
+}
+
+.text-area {
+    -fx-font-family: Lucida-Console;
+    -fx-font-size: 14px;
 }
