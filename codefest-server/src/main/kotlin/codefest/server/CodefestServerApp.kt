@@ -35,12 +35,16 @@ fun main() {
 
     log.info("Starting server on port: ${Config.PORT}")
 
-    port(Config.PORT)
+    try {
+        port(Config.PORT)
 
-    setUpRoutes()
+        setUpRoutes()
 
-    // TODO: debug user
-    dbUsers += User(Student("Almas", "Baim"), "test", 1, 0)
+        // TODO: debug user
+        dbUsers += User(Student("Almas", "Baim"), "test", 1, 0)
+    } catch (e: Exception) {
+        log.fatal("Error during startup", e)
+    }
 }
 
 private fun setUpRoutes() {
@@ -118,7 +122,6 @@ private val onLeaderboard = Route { _, _ ->
 private val onChallenges = Route { _, _ ->
     val challenges = listOf(
             Challenge(1, "public int challenge(String a, int b)",
-                    //ChallengeParamTypes(Int::class.java, listOf(String::class.java, Int::class.java)),
                     listOf(
                             ChallengeParams(5, listOf("Hello", 0)),
                             ChallengeParams(7, listOf("Hello w", 0)),

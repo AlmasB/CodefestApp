@@ -11,6 +11,7 @@ import codefest.common.Config.Companion.PATH_SUBMIT
 import codefest.common.data.Challenge
 import codefest.common.data.Codefest
 import codefest.common.data.Leaderboard
+import com.almasb.sslogger.Logger
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import javafx.application.Platform
 import java.lang.RuntimeException
@@ -29,6 +30,8 @@ import java.net.http.HttpResponse
  * @author Almas Baimagambetov (almaslvl@gmail.com)
  */
 object Server {
+    private val log = Logger.get("ServerProxy")
+
     private val client by lazy { HttpClient.newHttpClient() }
 
     private var token: Long = -1
@@ -127,8 +130,12 @@ object Server {
     }
 
     private fun request(reqURI: String, onSuccess: (String) -> Unit, onFail: (Throwable) -> Unit) {
+        val uri = URI.create("http://$reqURI")
+
+        log.debug("Building GET uri: $uri")
+
         val request = HttpRequest.newBuilder()
-                .uri(URI.create("http://$reqURI"))
+                .uri(uri)
                 .build()
 
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())

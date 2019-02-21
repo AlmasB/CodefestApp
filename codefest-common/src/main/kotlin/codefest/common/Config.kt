@@ -9,7 +9,7 @@ class Config {
     companion object {
 
         const val IP = "localhost"
-        const val PORT = 55555
+        const val PORT = 56677
 
         /* GET */
 

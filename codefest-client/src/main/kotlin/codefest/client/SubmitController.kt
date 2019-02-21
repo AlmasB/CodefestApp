@@ -1,7 +1,6 @@
 package codefest.client
 
 import codefest.common.data.Challenge
-import javafx.beans.binding.Bindings
 import javafx.beans.binding.Bindings.*
 import javafx.collections.FXCollections
 import javafx.concurrent.Task
@@ -137,13 +136,9 @@ class SubmitController {
                 val m = obj.javaClass.declaredMethods.find { it.name == "challenge" }!!
 
                 challenge.params.forEach {
-                    //val inputs = challenge.paramTypes.inputs.zip(it.inputs).map { (paramType, input) -> paramType.cast(input) }
+                    val result = m.invoke(obj, *it.inputs.toTypedArray())
 
-                    val inputs = m.parameterTypes.zip(it.inputs.map { normalize(it) }).map { (paramType, input) -> paramType.cast(input) }
-
-                    val result = m.invoke(obj, *inputs.toTypedArray())
-
-                    if (result.toString() == it.output) {
+                    if (result == it.output) {
                         println("OK!")
                     } else {
                         println("Expected: ${it.output}. Got: $result")
@@ -159,17 +154,6 @@ class SubmitController {
             fileManager.close()
 
             return null
-        }
-
-        private fun normalize(o: Any): Any = when(o) {
-            is java.lang.Integer -> {
-                println("$o is Integer")
-                Int::class.javaPrimitiveType!!.cast(o)
-            }
-            is java.lang.Long -> o.toLong()
-            is java.lang.Float -> o.toFloat()
-            is java.lang.Double -> o.toDouble()
-            else -> o
         }
 
         override fun failed() {
