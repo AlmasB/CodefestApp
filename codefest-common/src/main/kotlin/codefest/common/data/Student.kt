@@ -16,8 +16,6 @@ data class Student(
         get() = solvedChallenges.size
 
     override fun toString(): String {
-        return String.format("%s:\t%s",
-                firstName + "" + lastName,
-                numSolvedChallenges)
+        return "$firstName $lastName: $numSolvedChallenges"
     }
 }
