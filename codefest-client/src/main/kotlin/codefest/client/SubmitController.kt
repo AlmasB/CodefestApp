@@ -1,21 +1,22 @@
 package codefest.client
 
 import codefest.common.data.Challenge
-import javafx.beans.binding.Bindings.*
+import javafx.beans.binding.Bindings.isEmpty
 import javafx.collections.FXCollections
 import javafx.concurrent.Task
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TextArea
-
 import java.io.File
+import java.net.URI
 import java.net.URLClassLoader
+import java.util.*
 import javax.tools.DiagnosticCollector
 import javax.tools.JavaFileObject
-import javax.tools.ToolProvider
-import java.net.URI
 import javax.tools.SimpleJavaFileObject
+import javax.tools.ToolProvider
+
 
 /**
  *
@@ -117,7 +118,8 @@ class SubmitController {
             val code: String,
             val output: TextArea,
             val challenge: Challenge) : Task<Void>() {
-        
+        var challengeResult: String = ""
+
         override fun call(): Void? {
 
             // adapted from https://stackoverflow.com/questions/21544446/how-do-you-dynamically-compile-and-load-external-java-classes
@@ -131,24 +133,37 @@ class SubmitController {
             if (task.call()) {
                 val classLoader = URLClassLoader(arrayOf(File("./").toURI().toURL()))
                 val loadedClass = classLoader.loadClass("Solution")
+
                 val obj = loadedClass.getDeclaredConstructor().newInstance()
 
                 val m = obj.javaClass.declaredMethods.find { it.name == "challenge" }!!
 
+                var totalTests = 0
+                var passedTests = 0
                 challenge.params.forEach {
                     val result = m.invoke(obj, *it.inputs.toTypedArray())
 
                     if (result == it.output) {
-                        println("OK!")
+                        challengeResult += "\u2713 ${it.inputs}: OK!\n"
+                        passedTests++
                     } else {
-                        println("Expected: ${it.output}. Got: $result")
+                        challengeResult += "\u2717 ${it.inputs}: Expected: ${it.output}. Got: $result\n"
                     }
+                    totalTests++
                 }
+
+                // Add test summary at top of output.
+                challengeResult = String.format("Total: %s, Passed: %s, Failing: %s\n%s",
+                        totalTests,
+                        passedTests,
+                        totalTests - passedTests,
+                        challengeResult)
             } else {
-                for (diagnostic in diagnostics.diagnostics) {
-                    System.out.format("Error on line %d in %s%n",
+                for ((errorNo, diagnostic) in diagnostics.diagnostics.withIndex()) {
+                    challengeResult += String.format("[$errorNo] Error on line %d in %s - %s\n",
                             diagnostic.lineNumber,
-                            diagnostic.source.toUri())
+                            diagnostic.source.toUri(),
+                            diagnostic.getMessage(Locale.UK))
                 }
             }
             fileManager.close()
@@ -161,7 +176,7 @@ class SubmitController {
         }
 
         override fun succeeded() {
-            output.text = "Success!"
+            output.text = challengeResult
         }
     }
 }

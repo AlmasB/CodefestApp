@@ -32,7 +32,7 @@
             <Button fx:id="btnNext" text="Next" onAction="#onNext" />
         </HBox>
 
-        <TextArea fx:id="areaOutput" editable="false" />
+        <TextArea fx:id="areaOutput" editable="false" wrapText="true"/>
     </VBox>
 
     <TextArea fx:id="areaInput" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
