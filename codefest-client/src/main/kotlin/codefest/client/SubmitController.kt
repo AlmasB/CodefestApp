@@ -11,6 +11,7 @@ import javafx.scene.control.TextArea
 import java.io.File
 import java.net.URI
 import java.net.URLClassLoader
+import java.util.*
 import javax.tools.DiagnosticCollector
 import javax.tools.JavaFileObject
 import javax.tools.SimpleJavaFileObject
@@ -39,7 +40,7 @@ class SubmitController {
     private val challenges = FXCollections.observableArrayList<Challenge>()
     private lateinit var selectedChallenge: Challenge
     private var challengeIndex = 0
-    
+
     fun initialize() {
         btnSubmit.disableProperty().bind(isEmpty(challenges))
         btnPrev.disableProperty().bind(isEmpty(challenges))
@@ -152,13 +153,17 @@ class SubmitController {
                 }
 
                 // Add test summary at top of output.
-                challengeResult = "Total: $totalTests, Passed: $passedTests, Failing: ${totalTests - passedTests}\n" +
-                    challengeResult
+                challengeResult = String.format("Total: %s, Passed: %s, Failing: %s\n%s",
+                        totalTests,
+                        passedTests,
+                        totalTests - passedTests,
+                        challengeResult)
             } else {
-                for (diagnostic in diagnostics.diagnostics) {
-                    challengeResult += String.format("Error on line %d in %s%n",
+                for ((errorNo, diagnostic) in diagnostics.diagnostics.withIndex()) {
+                    challengeResult += String.format("[$errorNo] Error on line %d in %s - %s\n",
                             diagnostic.lineNumber,
-                            diagnostic.source.toUri())
+                            diagnostic.source.toUri(),
+                            diagnostic.getMessage(Locale.UK))
                 }
             }
             fileManager.close()
