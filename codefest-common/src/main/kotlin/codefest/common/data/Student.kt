@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
  *
  * @author Almas Baimagambetov (almaslvl@gmail.com)
  */
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Student(
         val firstName: String,
         val lastName: String,
@@ -14,4 +14,10 @@ data class Student(
 ) {
     val numSolvedChallenges
         get() = solvedChallenges.size
+
+    override fun toString(): String {
+        return String.format("%s:\t%s",
+                firstName + "" + lastName,
+                numSolvedChallenges)
+    }
 }
