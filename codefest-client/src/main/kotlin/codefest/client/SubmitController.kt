@@ -11,8 +11,6 @@ import javafx.scene.control.TextArea
 import java.io.File
 import java.net.URI
 import java.net.URLClassLoader
-import java.nio.file.Files
-import java.nio.file.Paths
 import javax.tools.DiagnosticCollector
 import javax.tools.JavaFileObject
 import javax.tools.SimpleJavaFileObject
@@ -140,10 +138,10 @@ class SubmitController {
                 challenge.params.forEach {
                     val result = m.invoke(obj, *it.inputs.toTypedArray())
 
-                    if (result == it.output) {
-                        challengeResult += "OK!\n"
+                    challengeResult += if (result == it.output) {
+                        "OK!\n"
                     } else {
-                        challengeResult += ("Expected: ${it.output}. Got: $result\n")
+                        "Expected: ${it.output}. Got: $result\n"
                     }
                 }
             } else {
