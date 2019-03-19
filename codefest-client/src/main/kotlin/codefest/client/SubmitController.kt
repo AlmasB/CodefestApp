@@ -1,21 +1,22 @@
 package codefest.client
 
 import codefest.common.data.Challenge
-import javafx.beans.binding.Bindings.*
+import javafx.beans.binding.Bindings.isEmpty
 import javafx.collections.FXCollections
 import javafx.concurrent.Task
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TextArea
-
 import java.io.File
+import java.net.URI
 import java.net.URLClassLoader
+import java.nio.file.Files
+import java.nio.file.Paths
 import javax.tools.DiagnosticCollector
 import javax.tools.JavaFileObject
-import javax.tools.ToolProvider
-import java.net.URI
 import javax.tools.SimpleJavaFileObject
+import javax.tools.ToolProvider
 
 /**
  *
@@ -117,7 +118,8 @@ class SubmitController {
             val code: String,
             val output: TextArea,
             val challenge: Challenge) : Task<Void>() {
-        
+        var challengeResult: String = ""
+
         override fun call(): Void? {
 
             // adapted from https://stackoverflow.com/questions/21544446/how-do-you-dynamically-compile-and-load-external-java-classes
@@ -139,14 +141,14 @@ class SubmitController {
                     val result = m.invoke(obj, *it.inputs.toTypedArray())
 
                     if (result == it.output) {
-                        println("OK!")
+                        challengeResult += "OK!\n"
                     } else {
-                        println("Expected: ${it.output}. Got: $result")
+                        challengeResult += ("Expected: ${it.output}. Got: $result\n")
                     }
                 }
             } else {
                 for (diagnostic in diagnostics.diagnostics) {
-                    System.out.format("Error on line %d in %s%n",
+                    challengeResult += String.format("Error on line %d in %s%n",
                             diagnostic.lineNumber,
                             diagnostic.source.toUri())
                 }
@@ -161,7 +163,7 @@ class SubmitController {
         }
 
         override fun succeeded() {
-            output.text = "Success!"
+            output.text = challengeResult
         }
     }
 }
