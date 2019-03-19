@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
 
-<?import javafx.scene.text.Text?>
-<?import java.net.URL?>
-<StackPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="codefest.client.HomeController">
-
-    <Label text="This is Home page" />
+<StackPane xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="codefest.client.HomeController">
+   <BorderPane prefHeight="200.0" prefWidth="200.0">
+      <center>
+      
+          <Label text="This is Home page" BorderPane.alignment="CENTER" />
+      </center>
+      <bottom>
+         <Button fx:id="btnLogout" mnemonicParsing="false" onAction="#onLogOut" text="Log Out" BorderPane.alignment="CENTER" />
+      </bottom>
+   </BorderPane>
 
 </StackPane>
+
