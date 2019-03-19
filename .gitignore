@@ -25,3 +25,6 @@ target/
 # logs #
 *.log
 logs/
+
+# Hide MacOS DS_Store #
+*.DS_Store
