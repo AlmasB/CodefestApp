@@ -26,6 +26,8 @@ class LoginController {
     private lateinit var fieldPassword: PasswordField
     @FXML
     private lateinit var btnLogin: Button
+    @FXML
+    private lateinit var btnRegister: Button
 
     private val isServerAlive = SimpleBooleanProperty(false)
 
@@ -55,8 +57,34 @@ class LoginController {
 
         Server.requestLogin(firstName, lastName, pass) {
             onSuccess = {
-                val scene = btnLogin.scene
-                scene.root = FXMLLoader.load(javaClass.getResource("main.fxml"))
+
+                if(it < 0){
+                    println("Unable to log in. Incorrect name or password.")
+                }
+                else{
+                    val scene = btnLogin.scene
+                    scene.root = FXMLLoader.load(javaClass.getResource("main.fxml"))
+                }
+
+                println("Got id: $it")
+            }
+        }
+    }
+
+    fun onRegister() {
+        val firstName = fieldFirstName.text
+        val lastName = fieldLastName.text
+        val pass = fieldPassword.text
+
+        Server.requestRegister(firstName, lastName, pass) {
+            onSuccess = {
+
+                if(it < 0){
+                    println("Failed to register user: $it. User already exists.")
+                }
+                else{
+                    println("Registered user: $it")
+                }
 
                 println("Got id: $it")
             }

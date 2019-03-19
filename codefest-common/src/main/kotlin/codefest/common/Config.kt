@@ -18,6 +18,7 @@ class Config {
         const val PATH_LOGOUT = "/logout"
         const val PATH_LEADERBOARD = "/leaderboard"
         const val PATH_CHALLENGES = "/challenges"
+        const val PATH_REGISTER = "/register"
 
         /* PUT */
 

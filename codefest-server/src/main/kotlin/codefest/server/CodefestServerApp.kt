@@ -6,6 +6,7 @@ import codefest.common.Config.Companion.PATH_LEADERBOARD
 import codefest.common.Config.Companion.PATH_LOGIN
 import codefest.common.Config.Companion.PATH_LOGOUT
 import codefest.common.Config.Companion.PATH_PING
+import codefest.common.Config.Companion.PATH_REGISTER
 import codefest.common.Config.Companion.PATH_SUBMIT
 import codefest.common.data.*
 import com.almasb.sslogger.ConsoleOutput
@@ -53,7 +54,7 @@ private fun setUpRoutes() {
     get(PATH_LOGOUT, onLogout)
     get(PATH_PING, onPing)
     get(PATH_CHALLENGES, onChallenges)
-
+    get(PATH_REGISTER, onRegister)
     put(PATH_SUBMIT, onSubmit)
 }
 
@@ -134,6 +135,27 @@ private val onChallenges = Route { _, _ ->
     val codefest = Codefest(challenges)
 
     jacksonObjectMapper().writeValueAsString(codefest)
+}
+
+private val onRegister = Route { req, _ ->
+    val firstName = req.queryParams("first")
+    val lastName = req.queryParams("last")
+    val password = req.queryParams("pass")
+
+    log.debug("Received register request from: $firstName $lastName")
+
+    // in case user already registered
+    val alreadyExists = dbUsers.any { it.student.firstName == firstName && it.student.lastName == lastName}
+    if (alreadyExists) {
+        log.debug("User already exists named: $firstName $lastName")
+        return@Route -1L
+    }
+
+    dbUsers += User(Student(firstName, lastName), password, 0, 0)
+
+    log.debug("Registration successful. Number of users is now ${dbUsers.size}")
+
+    return@Route 1L
 }
 
 private val onSubmit = Route { req, _ ->
