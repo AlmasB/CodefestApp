@@ -16,6 +16,7 @@ import javax.tools.JavaFileObject
 import javax.tools.SimpleJavaFileObject
 import javax.tools.ToolProvider
 
+
 /**
  *
  * @author Almas Baimagambetov (almaslvl@gmail.com)
@@ -38,7 +39,7 @@ class SubmitController {
     private val challenges = FXCollections.observableArrayList<Challenge>()
     private lateinit var selectedChallenge: Challenge
     private var challengeIndex = 0
-
+    
     fun initialize() {
         btnSubmit.disableProperty().bind(isEmpty(challenges))
         btnPrev.disableProperty().bind(isEmpty(challenges))
@@ -131,19 +132,28 @@ class SubmitController {
             if (task.call()) {
                 val classLoader = URLClassLoader(arrayOf(File("./").toURI().toURL()))
                 val loadedClass = classLoader.loadClass("Solution")
+
                 val obj = loadedClass.getDeclaredConstructor().newInstance()
 
                 val m = obj.javaClass.declaredMethods.find { it.name == "challenge" }!!
 
+                var totalTests = 0
+                var passedTests = 0
                 challenge.params.forEach {
                     val result = m.invoke(obj, *it.inputs.toTypedArray())
 
-                    challengeResult += if (result == it.output) {
-                        "OK!\n"
+                    if (result == it.output) {
+                        challengeResult += "\u2713 ${it.inputs}: OK!\n"
+                        passedTests++
                     } else {
-                        "Expected: ${it.output}. Got: $result\n"
+                        challengeResult += "\u2717 ${it.inputs}: Expected: ${it.output}. Got: $result\n"
                     }
+                    totalTests++
                 }
+
+                // Add test summary at top of output.
+                challengeResult = "Total: $totalTests, Passed: $passedTests, Failing: ${totalTests - passedTests}\n" +
+                    challengeResult
             } else {
                 for (diagnostic in diagnostics.diagnostics) {
                     challengeResult += String.format("Error on line %d in %s%n",
