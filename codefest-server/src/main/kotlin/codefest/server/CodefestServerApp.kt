@@ -128,6 +128,24 @@ private val onChallenges = Route { _, _ ->
                             ChallengeParams(5, listOf("Hello World", 6)),
                             ChallengeParams(-2, listOf("Hello", 7))
                     )
+            ),
+
+            Challenge(2, "public int challenge(String a, int b)",
+                    listOf(
+                            ChallengeParams(4, listOf("Hell", 0)),
+                            ChallengeParams(6, listOf("Hell w", 0)),
+                            ChallengeParams(4, listOf("Hell World", 6)),
+                            ChallengeParams(-3, listOf("Hell", 7))
+                    )
+            ),
+
+            Challenge(3, "public int challenge(String a, int b)",
+                    listOf(
+                            ChallengeParams(3, listOf("Hel", 0)),
+                            ChallengeParams(5, listOf("Hel w", 0)),
+                            ChallengeParams(3, listOf("Hel World", 6)),
+                            ChallengeParams(-4, listOf("Hel", 7))
+                    )
             )
     )
 
