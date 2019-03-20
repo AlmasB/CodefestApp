@@ -16,7 +16,7 @@
         <URL value="@main.css" />
     </stylesheets>
 
-    <Text fx:id="tv" />
+    <Text fx:id="leaderboardHeader" />
     <ListView fx:id="listView" />
 
 </VBox>

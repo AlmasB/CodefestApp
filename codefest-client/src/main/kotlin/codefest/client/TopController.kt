@@ -17,7 +17,7 @@ class TopController {
     private lateinit var listView: ListView<Student>
 
     @FXML
-    private lateinit var tv: Text
+    private lateinit var leaderboardHeader: Text
 
     fun initialize() {
         Server.requestLeaderboard {
@@ -29,7 +29,7 @@ class TopController {
 
     private fun updateListView(leaderboard: Leaderboard) {
         Platform.runLater {
-            tv.text = "Name:\tScore"
+            leaderboardHeader.text = "Name:\tScore"
             listView.items.setAll(leaderboard.students)
         }
     }
