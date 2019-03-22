@@ -1,8 +1,6 @@
 package codefest.client
 
 import javafx.fxml.FXML
-import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
 import javafx.scene.layout.BorderPane
 
 /**
@@ -14,7 +12,7 @@ class MainController {
     @FXML
     private lateinit var root: BorderPane
 
-    private val views = hashMapOf<String, Parent>()
+    private val viewPool = ViewPool()
 
     fun initialize() {
         onHome()
@@ -33,10 +31,6 @@ class MainController {
     }
 
     private fun setView(viewName: String) {
-        if (viewName !in views) {
-            views[viewName] = FXMLLoader.load(javaClass.getResource(viewName))
-        }
-
-        root.center = views[viewName]
+        root.center = viewPool.obtain(viewName)
     }
 }

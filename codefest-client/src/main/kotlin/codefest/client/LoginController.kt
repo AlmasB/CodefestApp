@@ -1,10 +1,8 @@
 package codefest.client
 
-import com.almasb.sslogger.Logger
 import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
-import javafx.fxml.FXMLLoader
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.PasswordField
@@ -31,6 +29,8 @@ class LoginController {
 
     private val isServerAlive = SimpleBooleanProperty(false)
 
+    private var isWaitingForResponse = SimpleBooleanProperty(false);
+
     fun initialize() {
         Server.requestPing {
             onSuccess = {
@@ -42,36 +42,48 @@ class LoginController {
                 Bindings.`when`(isServerAlive).then("Server status: Alive").otherwise("Server status: Down")
         )
 
-        btnLogin.disableProperty().bind(
-                fieldFirstName.textProperty().isEmpty
-                        .or(fieldLastName.textProperty().isEmpty)
-                        .or(fieldPassword.textProperty().isEmpty)
-                        .or(isServerAlive.not())
-        )
+        val shouldDisableButton = fieldFirstName.textProperty().isEmpty
+                .or(fieldLastName.textProperty().isEmpty)
+                .or(fieldPassword.textProperty().isEmpty)
+                .or(isServerAlive.not())
+                .or(isWaitingForResponse)
+
+        btnLogin.disableProperty().bind(shouldDisableButton)
+        btnRegister.disableProperty().bind(shouldDisableButton)
     }
 
     fun onLogin() {
+        isWaitingForResponse.value = true
+
+        println(isWaitingForResponse)
+        println(btnLogin.disableProperty())
+
         val firstName = fieldFirstName.text
         val lastName = fieldLastName.text
         val pass = fieldPassword.text
 
         Server.requestLogin(firstName, lastName, pass) {
             onSuccess = {
-
                 if(it < 0){
                     println("Unable to log in. Incorrect name or password.")
                 }
                 else{
-                    val scene = btnLogin.scene
-                    scene.root = FXMLLoader.load(javaClass.getResource("main.fxml"))
+                    Views.showMain()
                 }
 
+                isWaitingForResponse.value = false
                 println("Got id: $it")
+            }
+
+            onFailure = {
+                isWaitingForResponse.value = false
             }
         }
     }
 
     fun onRegister() {
+        isWaitingForResponse.value = true
+
         val firstName = fieldFirstName.text
         val lastName = fieldLastName.text
         val pass = fieldPassword.text
@@ -86,7 +98,12 @@ class LoginController {
                     println("Registered user: $it")
                 }
 
+                isWaitingForResponse.value = false
                 println("Got id: $it")
+            }
+
+            onFailure = {
+                isWaitingForResponse.value = false
             }
         }
     }

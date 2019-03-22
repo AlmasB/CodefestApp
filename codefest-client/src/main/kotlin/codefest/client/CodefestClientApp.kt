@@ -7,8 +7,8 @@ import com.almasb.sslogger.LoggerLevel
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.event.EventHandler
-import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
+import javafx.scene.layout.Pane
 import javafx.stage.Stage
 
 /**
@@ -31,7 +31,11 @@ class CodefestClientApp : Application() {
             onExit()
         }
 
-        stage.scene = Scene(FXMLLoader.load(javaClass.getResource("login.fxml")))
+        val scene = Scene(Pane())
+        Views.scene = scene
+        Views.showLogin()
+
+        stage.scene = Views.scene
         stage.show()
     }
 
