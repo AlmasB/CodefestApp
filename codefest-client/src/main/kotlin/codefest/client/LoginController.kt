@@ -1,5 +1,7 @@
 package codefest.client
 
+import com.almasb.sslogger.Logger
+import javafx.animation.FadeTransition
 import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
@@ -7,6 +9,15 @@ import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.PasswordField
 import javafx.scene.control.TextField
+import javafx.scene.layout.StackPane
+import javafx.scene.layout.VBox
+import javafx.scene.paint.Color
+import javafx.scene.shape.Rectangle
+import javafx.scene.text.Font
+import javafx.scene.text.Text
+import javafx.util.Duration
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  *
@@ -14,6 +25,10 @@ import javafx.scene.control.TextField
  */
 class LoginController {
 
+    private val log = Logger.get(javaClass)
+
+    @FXML
+    private lateinit var boxServerMessages: VBox
     @FXML
     private lateinit var labelStatus: Label
     @FXML
@@ -29,14 +44,16 @@ class LoginController {
 
     private val isServerAlive = SimpleBooleanProperty(false)
 
-    private var isWaitingForResponse = SimpleBooleanProperty(false);
+    private val isWaitingForResponse = SimpleBooleanProperty(false)
+
+    private val serverPingScheduler = Executors.newSingleThreadScheduledExecutor {
+        Thread(it, "Server Ping Thread").apply { isDaemon = true }
+    }
 
     fun initialize() {
-        Server.requestPing {
-            onSuccess = {
-                isServerAlive.value = true
-            }
-        }
+        boxServerMessages.children.clear()
+
+        serverPingScheduler.scheduleAtFixedRate(this::sendPing, 0L, 5L, TimeUnit.SECONDS)
 
         labelStatus.textProperty().bind(
                 Bindings.`when`(isServerAlive).then("Server status: Alive").otherwise("Server status: Down")
@@ -52,6 +69,20 @@ class LoginController {
         btnRegister.disableProperty().bind(shouldDisableButton)
     }
 
+    private fun sendPing() {
+        if (isServerAlive.value)
+            return
+
+        log.debug("Pinging server")
+
+        Server.requestPing {
+            onSuccess = {
+                log.debug("Got pong from server")
+                isServerAlive.value = true
+            }
+        }
+    }
+
     fun onLogin() {
         isWaitingForResponse.value = true
 
@@ -61,10 +92,9 @@ class LoginController {
 
         Server.requestLogin(firstName, lastName, pass) {
             onSuccess = {
-                if(it < 0){
-                    println("Unable to log in. Incorrect name or password.")
-                }
-                else{
+                if (it < 0){
+                    pushMessage("Unable to log in. Incorrect name or password.")
+                } else{
                     Views.showMain()
                 }
 
@@ -88,11 +118,10 @@ class LoginController {
         Server.requestRegister(firstName, lastName, pass) {
             onSuccess = {
 
-                if(it < 0){
-                    println("Failed to register user: $it. User already exists.")
-                }
-                else{
-                    println("Registered user: $it")
+                if (it < 0){
+                    pushMessage("Failed to register. User already exists.")
+                } else {
+                    pushMessage("Registration successful!")
                 }
 
                 isWaitingForResponse.value = false
@@ -103,5 +132,28 @@ class LoginController {
                 isWaitingForResponse.value = false
             }
         }
+    }
+
+    private fun pushMessage(message: String) {
+        if (boxServerMessages.children.size == 4) {
+            boxServerMessages.children.removeAt(0)
+        }
+
+        val text = Text(message)
+        text.opacity = 0.0
+        text.font = Font.font(14.0)
+
+        val ft = FadeTransition(Duration.seconds(1.0), text)
+        ft.toValue = 1.0
+        ft.play()
+
+        val bg = Rectangle(text.layoutBounds.width + 20, text.layoutBounds.height + 20, null)
+        bg.arcWidth = 15.0
+        bg.arcHeight = 15.0
+        bg.stroke = Color.DARKBLUE
+
+        val pane = StackPane(bg, text)
+
+        boxServerMessages.children += pane
     }
 }
