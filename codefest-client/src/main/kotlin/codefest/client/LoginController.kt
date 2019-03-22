@@ -55,9 +55,6 @@ class LoginController {
     fun onLogin() {
         isWaitingForResponse.value = true
 
-        println(isWaitingForResponse)
-        println(btnLogin.disableProperty())
-
         val firstName = fieldFirstName.text
         val lastName = fieldLastName.text
         val pass = fieldPassword.text
