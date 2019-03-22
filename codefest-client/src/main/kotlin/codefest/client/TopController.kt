@@ -3,6 +3,7 @@ package codefest.client
 import codefest.common.data.Leaderboard
 import codefest.common.data.Student
 import javafx.application.Platform
+import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
 import javafx.scene.control.ListView
 import javafx.scene.text.Text
@@ -20,6 +21,14 @@ class TopController {
     private lateinit var leaderboardHeader: Text
 
     fun initialize() {
+        listView.sceneProperty().addListener { _, _, current ->
+            if(current != null) {
+                requestServerLeaderboard()
+            }
+        }
+    }
+
+    private fun requestServerLeaderboard() {
         Server.requestLeaderboard {
             onSuccess = {
                 updateListView(it)
