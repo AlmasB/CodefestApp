@@ -12,7 +12,12 @@ object Config {
     /* GET */
 
     val PATH_PING = "/ping"
+
+    /**
+     * /login?first=FIRST_NAME&last=LAST_NAME&pass=PASSWORD
+     */
     val PATH_LOGIN = "/login"
+
     val PATH_LOGOUT = "/logout"
     val PATH_LEADERBOARD = "/leaderboard"
     val PATH_CHALLENGES = "/challenges"

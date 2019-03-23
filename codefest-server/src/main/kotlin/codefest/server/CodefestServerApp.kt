@@ -14,14 +14,12 @@ import com.almasb.sslogger.Logger
 import com.almasb.sslogger.LoggerConfig
 import com.almasb.sslogger.LoggerLevel
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import spark.Filter
 import spark.Route
 import spark.Spark.*
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicLong
-import spark.Spark.initExceptionHandler
-
-
 
 // TODO: what to return instead of OK and NOT_OK
 
@@ -45,9 +43,10 @@ fun main() {
 
     initExceptionHandler {
         log.fatal("ServerException", it)
-        stop()
-        System.exit(-1)
+        exit()
     }
+
+    loadDB()
 
     log.info("Starting server on port: ${Config.PORT}")
 
@@ -57,7 +56,7 @@ fun main() {
         setUpRoutes()
 
         // TODO: debug user
-        dbUsers += User(Student("Almas", "Baim"), "test", 1, 0)
+        dbUsers += User(Student("Almas", "Baim"), "test")
 
         runCLILoop()
     } catch (e: Exception) {
@@ -67,14 +66,35 @@ fun main() {
     }
 }
 
+private fun loadDB() {
+    // TODO: this needs to load registered users from a file into dbUsers
+}
+
+private fun saveDB() {
+    // TODO: this needs to save dbUsers into a file
+}
+
 private fun setUpRoutes() {
-    get(PATH_LEADERBOARD, onLeaderboard)
+    // filter requests based on required params
+    before(PATH_REGISTER, filter("first", "last", "pass"))
+    before(PATH_LOGIN, filter("first", "last", "pass"))
+    before(PATH_LOGOUT, filter("id"))
+    before(PATH_SUBMIT, filter("id"))
+
+    get(PATH_PING, onPing)
+    get(PATH_REGISTER, onRegister)
     get(PATH_LOGIN, onLogin)
     get(PATH_LOGOUT, onLogout)
-    get(PATH_PING, onPing)
+    get(PATH_LEADERBOARD, onLeaderboard)
     get(PATH_CHALLENGES, onChallenges)
-    get(PATH_REGISTER, onRegister)
+
     put(PATH_SUBMIT, onSubmit)
+}
+
+private fun filter(vararg paramNames: String) = Filter { req, _ ->
+    if (paramNames.any { it !in req.queryParams() }) {
+        halt("Malformed request")
+    }
 }
 
 private fun runCLILoop() {
@@ -98,6 +118,8 @@ private fun help() {
 }
 
 private fun exit() {
+    saveDB()
+
     log.info("Shutting down server and exiting")
 
     stop()
@@ -110,6 +132,27 @@ private val onPing = Route { _, _ ->
     "OK"
 }
 
+private val onRegister = Route { req, _ ->
+    val firstName = req.queryParams("first")
+    val lastName = req.queryParams("last")
+    val password = req.queryParams("pass")
+
+    log.debug("Received register request from: $firstName $lastName")
+
+    // in case user already registered
+    val alreadyExists = dbUsers.any { it.hasName(firstName, lastName) }
+    if (alreadyExists) {
+        log.debug("User already exists named: $firstName $lastName")
+        return@Route -1L
+    }
+
+    dbUsers += User(Student(firstName, lastName), encryptPassword(password))
+
+    log.debug("Registration successful. Number of users is now ${dbUsers.size}")
+
+    return@Route 1L
+}
+
 private val onLogin = Route { req, _ ->
     val firstName = req.queryParams("first")
     val lastName = req.queryParams("last")
@@ -118,12 +161,12 @@ private val onLogin = Route { req, _ ->
     log.debug("Received login request from: $firstName $lastName")
 
     // in case user already logged in
-    val removed = activeUsers.removeIf { it.student.firstName == firstName && it.student.lastName == lastName && it.password == password }
+    val removed = activeUsers.removeIf { it.hasName(firstName, lastName) && it.password == encryptPassword(password) }
     if (removed) {
         log.debug("Removed already logged in user $firstName $lastName")
     }
 
-    dbUsers.find { it.student.firstName == firstName && it.student.lastName == lastName && it.password == password }
+    dbUsers.find { it.hasName(firstName, lastName) && it.password == encryptPassword(password) }
             ?.let {
                 val id = nextActive.getAndIncrement()
 
@@ -131,6 +174,7 @@ private val onLogin = Route { req, _ ->
 
                 activeUsers += it
 
+                log.debug("Login successful")
                 log.info("Num active users: ${activeUsers.size}")
 
                 return@Route id
@@ -141,11 +185,9 @@ private val onLogin = Route { req, _ ->
     return@Route -1L
 }
 
-// TODO: nicer way of sanity checking the params?
-
 private val onLogout = Route { req, _ ->
 
-    val id = req.queryParams("id")?.toLong() ?: return@Route "NOT OK"
+    val id = req.queryParams("id").toLong()
 
     log.debug("Logout request from id: $id")
 
@@ -203,30 +245,9 @@ private val onChallenges = Route { _, _ ->
     jacksonObjectMapper().writeValueAsString(codefest)
 }
 
-private val onRegister = Route { req, _ ->
-    val firstName = req.queryParams("first")
-    val lastName = req.queryParams("last")
-    val password = req.queryParams("pass")
-
-    log.debug("Received register request from: $firstName $lastName")
-
-    // in case user already registered
-    val alreadyExists = dbUsers.any { it.student.firstName == firstName && it.student.lastName == lastName}
-    if (alreadyExists) {
-        log.debug("User already exists named: $firstName $lastName")
-        return@Route -1L
-    }
-
-    dbUsers += User(Student(firstName, lastName), encryptPassword(password), 0, 0)
-
-    log.debug("Registration successful. Number of users is now ${dbUsers.size}")
-
-    return@Route 1L
-}
-
 private val onSubmit = Route { req, _ ->
     // check token first
-    val id = req.queryParams("id")?.toLong() ?: return@Route "NOT OK"
+    val id = req.queryParams("id").toLong()
 
     // get challenge id that passed tests
     val challengeID = req.queryParams("challengeID")?.toInt() ?: return@Route "NOT OK"
