@@ -6,6 +6,7 @@ import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
 import javafx.scene.control.ListView
+import javafx.scene.layout.VBox
 import javafx.scene.text.Text
 
 /**
@@ -16,19 +17,14 @@ class LeaderboardController {
 
     @FXML
     private lateinit var listView: ListView<Student>
-
     @FXML
     private lateinit var leaderboardHeader: Text
 
     fun initialize() {
-        listView.sceneProperty().addListener { _, _, current ->
-            if(current != null) {
-                requestServerLeaderboard()
-            }
-        }
+        leaderboardHeader.text = "Name:\tScore"
     }
 
-    private fun requestServerLeaderboard() {
+    fun requestLeaderboard() {
         Server.requestLeaderboard {
             onSuccess = {
                 updateListView(it)
@@ -38,7 +34,6 @@ class LeaderboardController {
 
     private fun updateListView(leaderboard: Leaderboard) {
         Platform.runLater {
-            leaderboardHeader.text = "Name:\tScore"
             listView.items.setAll(leaderboard.students)
         }
     }

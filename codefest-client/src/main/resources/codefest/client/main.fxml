@@ -24,8 +24,8 @@
             <Tab text="Home" closable="false">
                 <fx:include source="home.fxml"/>
             </Tab>
-            <Tab text="Leaderboard" closable="false">
-                <fx:include source="leaderboard.fxml"/>
+            <Tab fx:id="tabLeaderboard" text="Leaderboard" closable="false">
+                <fx:include fx:id="leaderboard" source="leaderboard.fxml"/>
             </Tab>
             <Tab text="Challenges" closable="false">
                 <fx:include source="submit.fxml"/>
