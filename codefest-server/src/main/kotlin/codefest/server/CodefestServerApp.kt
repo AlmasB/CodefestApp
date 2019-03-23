@@ -25,6 +25,8 @@ import java.util.concurrent.atomic.AtomicLong
 
 private val log = Logger.get("Codefest Server")
 
+private val challenges = arrayListOf<Challenge>()
+
 private val dbUsers = CopyOnWriteArrayList<User>()
 
 private val activeUsers = CopyOnWriteArrayList<User>()
@@ -46,6 +48,7 @@ fun main() {
         exit()
     }
 
+    loadChallenges()
     loadDB()
 
     log.info("Starting server on port: ${Config.PORT}")
@@ -64,6 +67,39 @@ fun main() {
 
         // TODO: find a way to handle this properly
     }
+}
+
+private fun loadChallenges() {
+    // TODO: this needs to load challenges from an external file
+
+    challenges += listOf(
+            Challenge(1, "public int challenge(String a, int b)",
+                    listOf(
+                            ChallengeParams(5, listOf("Hello", 0)),
+                            ChallengeParams(7, listOf("Hello w", 0)),
+                            ChallengeParams(5, listOf("Hello World", 6)),
+                            ChallengeParams(-2, listOf("Hello", 7))
+                    )
+            ),
+
+            Challenge(2, "public int challenge(String a, int b)",
+                    listOf(
+                            ChallengeParams(4, listOf("Hell", 0)),
+                            ChallengeParams(6, listOf("Hell w", 0)),
+                            ChallengeParams(4, listOf("Hell World", 6)),
+                            ChallengeParams(-3, listOf("Hell", 7))
+                    )
+            ),
+
+            Challenge(3, "public int challenge(String a, int b)",
+                    listOf(
+                            ChallengeParams(3, listOf("Hel", 0)),
+                            ChallengeParams(5, listOf("Hel w", 0)),
+                            ChallengeParams(3, listOf("Hel World", 6)),
+                            ChallengeParams(-4, listOf("Hel", 7))
+                    )
+            )
+    )
 }
 
 private fun loadDB() {
@@ -205,44 +241,13 @@ private val onLogout = Route { req, _ ->
 private val onLeaderboard = Route { _, _ ->
     val students = dbUsers.map { it.student }
             .sortedByDescending { it.numSolvedChallenges }
-            .take(5)
+            .take(10)
 
     jacksonObjectMapper().writeValueAsString(Leaderboard(students))
 }
 
 private val onChallenges = Route { _, _ ->
-    val challenges = listOf(
-            Challenge(1, "public int challenge(String a, int b)",
-                    listOf(
-                            ChallengeParams(5, listOf("Hello", 0)),
-                            ChallengeParams(7, listOf("Hello w", 0)),
-                            ChallengeParams(5, listOf("Hello World", 6)),
-                            ChallengeParams(-2, listOf("Hello", 7))
-                    )
-            ),
-
-            Challenge(2, "public int challenge(String a, int b)",
-                    listOf(
-                            ChallengeParams(4, listOf("Hell", 0)),
-                            ChallengeParams(6, listOf("Hell w", 0)),
-                            ChallengeParams(4, listOf("Hell World", 6)),
-                            ChallengeParams(-3, listOf("Hell", 7))
-                    )
-            ),
-
-            Challenge(3, "public int challenge(String a, int b)",
-                    listOf(
-                            ChallengeParams(3, listOf("Hel", 0)),
-                            ChallengeParams(5, listOf("Hel w", 0)),
-                            ChallengeParams(3, listOf("Hel World", 6)),
-                            ChallengeParams(-4, listOf("Hel", 7))
-                    )
-            )
-    )
-
-    val codefest = Codefest(challenges)
-
-    jacksonObjectMapper().writeValueAsString(codefest)
+    jacksonObjectMapper().writeValueAsString(Codefest(challenges))
 }
 
 private val onSubmit = Route { req, _ ->
