@@ -1,14 +1,14 @@
 package codefest.client
 
-import codefest.common.Config.Companion.IP
-import codefest.common.Config.Companion.PATH_CHALLENGES
-import codefest.common.Config.Companion.PATH_LEADERBOARD
-import codefest.common.Config.Companion.PORT
-import codefest.common.Config.Companion.PATH_PING
-import codefest.common.Config.Companion.PATH_LOGIN
-import codefest.common.Config.Companion.PATH_LOGOUT
-import codefest.common.Config.Companion.PATH_SUBMIT
-import codefest.common.Config.Companion.PATH_REGISTER
+import codefest.common.Config.IP
+import codefest.common.Config.PATH_CHALLENGES
+import codefest.common.Config.PATH_LEADERBOARD
+import codefest.common.Config.PORT
+import codefest.common.Config.PATH_PING
+import codefest.common.Config.PATH_LOGIN
+import codefest.common.Config.PATH_LOGOUT
+import codefest.common.Config.PATH_SUBMIT
+import codefest.common.Config.PATH_REGISTER
 import codefest.common.data.Challenge
 import codefest.common.data.Codefest
 import codefest.common.data.Leaderboard

@@ -4,24 +4,21 @@ package codefest.common
  *
  * @author Almas Baimagambetov (almaslvl@gmail.com)
  */
-class Config {
+object Config {
 
-    companion object {
+    val IP = "localhost"
+    val PORT = 56679
 
-        const val IP = "localhost"
-        const val PORT = 56677
+    /* GET */
 
-        /* GET */
+    val PATH_PING = "/ping"
+    val PATH_LOGIN = "/login"
+    val PATH_LOGOUT = "/logout"
+    val PATH_LEADERBOARD = "/leaderboard"
+    val PATH_CHALLENGES = "/challenges"
+    val PATH_REGISTER = "/register"
 
-        const val PATH_PING = "/ping"
-        const val PATH_LOGIN = "/login"
-        const val PATH_LOGOUT = "/logout"
-        const val PATH_LEADERBOARD = "/leaderboard"
-        const val PATH_CHALLENGES = "/challenges"
-        const val PATH_REGISTER = "/register"
+    /* PUT */
 
-        /* PUT */
-
-        const val PATH_SUBMIT = "/submit"
-    }
+    val PATH_SUBMIT = "/submit"
 }
