@@ -16,8 +16,12 @@ import com.almasb.sslogger.LoggerLevel
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import spark.Route
 import spark.Spark.*
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicLong
+import spark.Spark.initExceptionHandler
+
+
 
 // TODO: what to return instead of OK and NOT_OK
 
@@ -30,9 +34,20 @@ private val activeUsers = CopyOnWriteArrayList<User>()
 // runtimeID starts at 1
 private val nextActive = AtomicLong(1)
 
+private val cliCommands = mapOf<String, () -> Unit> (
+        "help" to ::help,
+        "exit" to ::exit
+)
+
 fun main() {
     Logger.configure(LoggerConfig())
     Logger.addOutput(ConsoleOutput(), LoggerLevel.DEBUG)
+
+    initExceptionHandler {
+        log.fatal("ServerException", it)
+        stop()
+        System.exit(-1)
+    }
 
     log.info("Starting server on port: ${Config.PORT}")
 
@@ -43,8 +58,12 @@ fun main() {
 
         // TODO: debug user
         dbUsers += User(Student("Almas", "Baim"), "test", 1, 0)
+
+        runCLILoop()
     } catch (e: Exception) {
-        log.fatal("Error during startup", e)
+        log.fatal("ServerException", e)
+
+        // TODO: find a way to handle this properly
     }
 }
 
@@ -56,6 +75,35 @@ private fun setUpRoutes() {
     get(PATH_CHALLENGES, onChallenges)
     get(PATH_REGISTER, onRegister)
     put(PATH_SUBMIT, onSubmit)
+}
+
+private fun runCLILoop() {
+    val scanner = Scanner(System.`in`)
+
+    while (true) {
+        val input = scanner.next()
+
+        val cmd = cliCommands[input] ?: { println("Command $input not found!") }
+
+        cmd.invoke()
+    }
+}
+
+private fun help() {
+    println("List of available commands")
+
+    cliCommands.forEach { (cmdName, _) ->
+        println(cmdName)
+    }
+}
+
+private fun exit() {
+    log.info("Shutting down server and exiting")
+
+    stop()
+
+    Logger.close()
+    System.exit(0)
 }
 
 private val onPing = Route { _, _ ->
