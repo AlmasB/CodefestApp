@@ -17,9 +17,9 @@
    
               <Separator />
    
-              <TextField fx:id="fieldFirstName" promptText="First name" text="Almas" />
-           <TextField fx:id="fieldLastName" promptText="Last name" text="Baim" />
-           <PasswordField fx:id="fieldPassword" promptText="Password" text="test" />
+              <TextField fx:id="fieldFirstName" promptText="First name" text="Almas" onAction="#onLogin" />
+           <TextField fx:id="fieldLastName" promptText="Last name" text="Baim" onAction="#onLogin" />
+           <PasswordField fx:id="fieldPassword" promptText="Password" text="test" onAction="#onLogin" />
    
               <Button fx:id="btnLogin" onAction="#onLogin" prefWidth="100" text="Login" />
          <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#onRegister" prefHeight="27.0" prefWidth="100.0" text="Register" />

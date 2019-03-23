@@ -24,6 +24,9 @@ class CodefestClientApp : Application() {
         stage.minWidth = 800.0
         stage.minHeight = 600.0
 
+        stage.width = 800.0
+        stage.height = 600.0
+
         stage.title = "Codefest Client"
         stage.onCloseRequest = EventHandler {
             it.consume()
@@ -31,9 +34,8 @@ class CodefestClientApp : Application() {
             onExit()
         }
 
-        val scene = Scene(Pane())
-        Views.scene = scene
         Views.showLogin()
+        Views.showMaskerWhen(Context.isWaitingForResponse)
 
         stage.scene = Views.scene
         stage.show()
@@ -42,6 +44,11 @@ class CodefestClientApp : Application() {
     private fun onExit() {
         if (exitRequested)
             return
+
+        if (!Context.isLoggedIn.value) {
+            Platform.exit()
+            return
+        }
 
         Server.requestLogout {
             onSuccess = {

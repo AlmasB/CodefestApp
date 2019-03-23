@@ -125,6 +125,8 @@ object Server {
                 .uri(URI.create("http://$IP:$PORT$PATH_SUBMIT?id=$token&challengeID=$challengeID"))
                 .build()
 
+        Context.isWaitingForResponse.value = true
+
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply { it.body() }
                 .whenCompleteAsync { result, error ->
@@ -142,6 +144,8 @@ object Server {
 //                            onFail(RuntimeException("Both result and error were null!"))
 //                        }
                     }
+
+                    Context.isWaitingForResponse.value = false
                 }
     }
 
@@ -154,9 +158,12 @@ object Server {
                 .uri(uri)
                 .build()
 
+        Context.isWaitingForResponse.value = true
+
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply { it.body() }
                 .whenCompleteAsync { result, error ->
+
                     if (result != null) {
                         Platform.runLater {
                             onSuccess(result)
@@ -170,6 +177,8 @@ object Server {
                             onFail(RuntimeException("Both result and error were null!"))
                         }
                     }
+
+                    Context.isWaitingForResponse.value = false
                 }
     }
 }

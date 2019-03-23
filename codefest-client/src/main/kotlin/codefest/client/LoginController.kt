@@ -44,8 +44,6 @@ class LoginController {
 
     private val isServerAlive = SimpleBooleanProperty(false)
 
-    private val isWaitingForResponse = SimpleBooleanProperty(false)
-
     private val serverPingScheduler = Executors.newSingleThreadScheduledExecutor {
         Thread(it, "Server Ping Thread").apply { isDaemon = true }
     }
@@ -63,7 +61,6 @@ class LoginController {
                 .or(fieldLastName.textProperty().isEmpty)
                 .or(fieldPassword.textProperty().isEmpty)
                 .or(isServerAlive.not())
-                .or(isWaitingForResponse)
 
         btnLogin.disableProperty().bind(shouldDisableButton)
         btnRegister.disableProperty().bind(shouldDisableButton)
@@ -84,8 +81,6 @@ class LoginController {
     }
 
     fun onLogin() {
-        isWaitingForResponse.value = true
-
         val firstName = fieldFirstName.text
         val lastName = fieldLastName.text
         val pass = fieldPassword.text
@@ -98,19 +93,15 @@ class LoginController {
                     Views.showMain()
                 }
 
-                isWaitingForResponse.value = false
                 println("Got id: $it")
             }
 
             onFailure = {
-                isWaitingForResponse.value = false
             }
         }
     }
 
     fun onRegister() {
-        isWaitingForResponse.value = true
-
         val firstName = fieldFirstName.text
         val lastName = fieldLastName.text
         val pass = fieldPassword.text
@@ -124,12 +115,7 @@ class LoginController {
                     pushMessage("Registration successful!")
                 }
 
-                isWaitingForResponse.value = false
                 println("Got id: $it")
-            }
-
-            onFailure = {
-                isWaitingForResponse.value = false
             }
         }
     }

@@ -13,11 +13,15 @@ class HomeController {
     private lateinit var btnLogout: Button
 
     fun onLogOut() {
+
+
         Server.requestLogout {
             onSuccess = {
+                Context.isLoggedIn.value = false
+
                 Views.showLogin()
 
-                println("Logged out")
+
             }
         }
     }
