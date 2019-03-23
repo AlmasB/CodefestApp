@@ -13,10 +13,6 @@
       fx:controller="codefest.client.SubmitController"
       spacing="15">
 
-    <stylesheets>
-        <URL value="@main.css" />
-    </stylesheets>
-
     <padding>
         <Insets topRightBottomLeft="10" />
     </padding>

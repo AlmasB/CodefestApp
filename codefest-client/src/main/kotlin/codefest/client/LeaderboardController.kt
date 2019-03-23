@@ -12,7 +12,7 @@ import javafx.scene.text.Text
  *
  * @author Almas Baimagambetov (almaslvl@gmail.com)
  */
-class TopController {
+class LeaderboardController {
 
     @FXML
     private lateinit var listView: ListView<Student>
