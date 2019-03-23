@@ -217,7 +217,7 @@ private val onRegister = Route { req, _ ->
         return@Route -1L
     }
 
-    dbUsers += User(Student(firstName, lastName), password, 0, 0)
+    dbUsers += User(Student(firstName, lastName), encryptPassword(password), 0, 0)
 
     log.debug("Registration successful. Number of users is now ${dbUsers.size}")
 
