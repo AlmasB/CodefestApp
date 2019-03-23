@@ -1,0 +1,43 @@
+@font-face {
+    font-family: Segan-Light;
+    src: url('fonts/Segan-Light.ttf');
+}
+
+#signin_button {
+    -fx-background-color: blue;
+    -fx-text-fill: white;
+    -fx-font-family: Segan-Light;
+    -fx-font-size: 18px;
+}
+
+#signin_button.button:focused {
+    -fx-background-color: rgba(0%, 0%, 85%);
+}
+
+#signin_button.button:hover {
+    -fx-background-color: rgba(0%, 0%, 85%);
+}
+
+#register_button {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-family: Segan-Light;
+    -fx-font-size: 14px;
+    -fx-underline: true;
+}
+
+#register_button.button:hover {
+    -fx-text-fill: blue;
+}
+
+.text-field {
+    -fx-border-color: #a9a9a9;
+    -fx-border-radius: 5;
+    -fx-font-family: Segan-Light;
+    -fx-font-size: 18px;
+}
+
+.text-field:focused {
+    -fx-border-color: black;
+    -fx-border-radius: 5;
+}
