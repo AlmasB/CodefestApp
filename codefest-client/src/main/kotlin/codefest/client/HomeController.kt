@@ -9,19 +9,15 @@ import javafx.scene.control.Button
  */
 class HomeController {
 
-    @FXML
-    private lateinit var btnLogout: Button
+    @FromContext
+    private lateinit var context: Context
 
     fun onLogOut() {
-
-
         Server.requestLogout {
             onSuccess = {
-                Context.isLoggedIn.value = false
+                context.isLoggedIn.value = false
 
-                Views.showLogin()
-
-
+                context.showLogin()
             }
         }
     }

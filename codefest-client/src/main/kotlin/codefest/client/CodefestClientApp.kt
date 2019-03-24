@@ -20,6 +20,8 @@ class CodefestClientApp : Application() {
 
     private var exitRequested = false
 
+    private val context = Context()
+
     override fun start(stage: Stage) {
         stage.minWidth = 800.0
         stage.minHeight = 600.0
@@ -34,18 +36,22 @@ class CodefestClientApp : Application() {
             onExit()
         }
 
-        Views.showLogin()
-        Views.showMaskerWhen(Context.isWaitingForResponse)
+        stage.scene = Scene(context.root)
 
-        stage.scene = Views.scene
+        context.showLogin()
+
         stage.show()
+    }
+
+    override fun stop() {
+        Logger.close()
     }
 
     private fun onExit() {
         if (exitRequested)
             return
 
-        if (!Context.isLoggedIn.value) {
+        if (!context.isLoggedIn.value) {
             Platform.exit()
             return
         }

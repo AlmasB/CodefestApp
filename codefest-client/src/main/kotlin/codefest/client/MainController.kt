@@ -12,8 +12,6 @@ import javafx.scene.layout.BorderPane
 class MainController {
 
     @FXML
-    private lateinit var root: BorderPane
-    @FXML
     private lateinit var tabLeaderboard: Tab
     @FXML
     private lateinit var leaderboardController: LeaderboardController

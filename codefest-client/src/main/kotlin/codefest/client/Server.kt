@@ -125,7 +125,7 @@ object Server {
                 .uri(URI.create("http://$IP:$PORT$PATH_SUBMIT?id=$token&challengeID=$challengeID"))
                 .build()
 
-        Context.isWaitingForResponse.value = true
+        //Context.isWaitingForResponse.value = true
 
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply { it.body() }
@@ -145,7 +145,7 @@ object Server {
 //                        }
                     }
 
-                    Context.isWaitingForResponse.value = false
+                    //Context.isWaitingForResponse.value = false
                 }
     }
 
@@ -158,7 +158,7 @@ object Server {
                 .uri(uri)
                 .build()
 
-        Context.isWaitingForResponse.value = true
+        //Context.isWaitingForResponse.value = true
 
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply { it.body() }
@@ -178,7 +178,7 @@ object Server {
                         }
                     }
 
-                    Context.isWaitingForResponse.value = false
+                    //Context.isWaitingForResponse.value = false
                 }
     }
 }

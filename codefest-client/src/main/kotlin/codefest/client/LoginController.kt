@@ -27,6 +27,9 @@ class LoginController {
 
     private val log = Logger.get(javaClass)
 
+    @FromContext
+    private lateinit var context: Context
+
     @FXML
     private lateinit var boxServerMessages: VBox
     @FXML
@@ -90,7 +93,7 @@ class LoginController {
                 if (it < 0){
                     pushMessage("Unable to log in. Incorrect name or password.")
                 } else{
-                    Views.showMain()
+                    context.showMain()
                 }
 
                 println("Got id: $it")
