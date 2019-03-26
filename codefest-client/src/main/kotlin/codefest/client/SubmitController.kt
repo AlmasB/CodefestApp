@@ -55,6 +55,7 @@ class SubmitController {
     }
 
     private fun selectChallenge(challenge: Challenge) {
+
         selectedChallenge = challenge
 
         var text = "Challenge N${challenge.id}\n\n"
@@ -94,7 +95,7 @@ class SubmitController {
     fun onSubmit() {
         val text = areaInput.text
 
-        Server.requestSubmit(2)
+        Server.requestSubmit(selectedChallenge.id, text)
 
         // TODO: use Service
         Thread(CompileAndExecuteTask(text, areaOutput, selectedChallenge)).start()

@@ -119,9 +119,9 @@ object Server {
         request("$IP:$PORT$PATH_LEADERBOARD", fn, response.onFailure)
     }
 
-    fun requestSubmit(challengeID: Int) {
+    fun requestSubmit(challengeID: Int, solutionText: String) {
         val request = HttpRequest.newBuilder()
-                .PUT(HttpRequest.BodyPublishers.ofString(""))
+                .PUT(HttpRequest.BodyPublishers.ofString(solutionText))
                 .uri(URI.create("http://$IP:$PORT$PATH_SUBMIT?id=$token&challengeID=$challengeID"))
                 .build()
 
