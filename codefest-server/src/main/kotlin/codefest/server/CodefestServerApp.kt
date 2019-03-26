@@ -58,8 +58,10 @@ fun main() {
 
         setUpRoutes()
 
+        val userSecretKey = generateSecretKey()
+
         // TODO: debug user
-        dbUsers += User(Student("Almas", "Baim"), "test")
+        dbUsers += User(Student("Almas", "Baim"), encryptPassword("test", userSecretKey), userSecretKey)
 
         runCLILoop()
     } catch (e: Exception) {
@@ -168,6 +170,8 @@ private val onPing = Route { _, _ ->
     "OK"
 }
 
+
+
 private val onRegister = Route { req, _ ->
     val firstName = req.queryParams("first")
     val lastName = req.queryParams("last")
@@ -182,7 +186,9 @@ private val onRegister = Route { req, _ ->
         return@Route -1L
     }
 
-    dbUsers += User(Student(firstName, lastName), encryptPassword(password))
+    val secretKey = generateSecretKey()
+
+    dbUsers += User(Student(firstName, lastName), encryptPassword(password, secretKey), secretKey)
 
     log.debug("Registration successful. Number of users is now ${dbUsers.size}")
 
@@ -196,14 +202,20 @@ private val onLogin = Route { req, _ ->
 
     log.debug("Received login request from: $firstName $lastName")
 
+
     // in case user already logged in
-    val removed = activeUsers.removeIf { it.hasName(firstName, lastName) && it.password == encryptPassword(password) }
-    if (removed) {
-        log.debug("Removed already logged in user $firstName $lastName")
+    activeUsers.find { it.hasName(firstName, lastName) }?.let {
+        if (it.password == encryptPassword(password, it.secretKey)){
+            activeUsers.removeIf { it.hasName(firstName, lastName)}
+            log.debug("Removed already logged in user $firstName $lastName")
+        }
     }
 
-    dbUsers.find { it.hasName(firstName, lastName) && it.password == encryptPassword(password) }
+
+
+    dbUsers.find { it.hasName(firstName, lastName) && it.password == encryptPassword(password, it.secretKey) }
             ?.let {
+
                 val id = nextActive.getAndIncrement()
 
                 it.runtimeID = id
