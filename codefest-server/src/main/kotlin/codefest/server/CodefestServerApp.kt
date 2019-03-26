@@ -257,12 +257,16 @@ private val onSubmit = Route { req, _ ->
 
     // get challenge id that passed tests
     val challengeID = req.queryParams("challengeID")?.toInt() ?: return@Route "NOT OK"
+    val solution = req.body()?.toString() ?: return@Route "NOT OK"
 
     val user = findUser(id)?.apply { student.solvedChallenges += challengeID } ?: return@Route "NOT OK"
 
     // reached succesfully
     dbUsers.find{ it.hasName(user.student.firstName, user.student.lastName)}
-            ?.apply { student.solvedChallenges += challengeID } ?: return@Route "NOT OK"
+            ?.apply {
+                student.solvedChallenges += challengeID
+                student.solutions.put(challengeID, solution)
+            } ?: return@Route "NOT OK"
 
     "OK"
 }
