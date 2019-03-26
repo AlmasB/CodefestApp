@@ -17,3 +17,14 @@
     -fx-font-family: Lucida-Console;
     -fx-font-size: 14px;
 }
+
+.tab .tab-label {
+    -fx-font-family: Segan-Light;
+    -fx-font-size: 12px;
+    -fx-text-fill: grey;
+}
+
+.tab:selected .tab-label {
+    -fx-font-size: 15px;
+    -fx-text-fill: black;
+}

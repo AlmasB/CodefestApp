@@ -1,7 +1,6 @@
 package codefest.client
 
 import javafx.fxml.FXML
-import javafx.fxml.FXMLLoader
 import javafx.scene.control.Button
 
 /**
@@ -10,16 +9,15 @@ import javafx.scene.control.Button
  */
 class HomeController {
 
-    @FXML
-    private lateinit var btnLogout: Button
+    @FromContext
+    private lateinit var context: Context
 
     fun onLogOut() {
         Server.requestLogout {
             onSuccess = {
-                val scene = btnLogout.scene
-                scene.root = FXMLLoader.load(javaClass.getResource("login.fxml"))
+                context.isLoggedIn.value = false
 
-                println("Logged out")
+                context.showLogin()
             }
         }
     }

@@ -1,14 +1,14 @@
 package codefest.client
 
-import codefest.common.Config.Companion.IP
-import codefest.common.Config.Companion.PATH_CHALLENGES
-import codefest.common.Config.Companion.PATH_LEADERBOARD
-import codefest.common.Config.Companion.PORT
-import codefest.common.Config.Companion.PATH_PING
-import codefest.common.Config.Companion.PATH_LOGIN
-import codefest.common.Config.Companion.PATH_LOGOUT
-import codefest.common.Config.Companion.PATH_SUBMIT
-import codefest.common.Config.Companion.PATH_REGISTER
+import codefest.common.Config.IP
+import codefest.common.Config.PATH_CHALLENGES
+import codefest.common.Config.PATH_LEADERBOARD
+import codefest.common.Config.PORT
+import codefest.common.Config.PATH_PING
+import codefest.common.Config.PATH_LOGIN
+import codefest.common.Config.PATH_LOGOUT
+import codefest.common.Config.PATH_SUBMIT
+import codefest.common.Config.PATH_REGISTER
 import codefest.common.data.Challenge
 import codefest.common.data.Codefest
 import codefest.common.data.Leaderboard
@@ -125,6 +125,8 @@ object Server {
                 .uri(URI.create("http://$IP:$PORT$PATH_SUBMIT?id=$token&challengeID=$challengeID"))
                 .build()
 
+        //Context.isWaitingForResponse.value = true
+
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply { it.body() }
                 .whenCompleteAsync { result, error ->
@@ -142,6 +144,8 @@ object Server {
 //                            onFail(RuntimeException("Both result and error were null!"))
 //                        }
                     }
+
+                    //Context.isWaitingForResponse.value = false
                 }
     }
 
@@ -154,9 +158,12 @@ object Server {
                 .uri(uri)
                 .build()
 
+        //Context.isWaitingForResponse.value = true
+
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply { it.body() }
                 .whenCompleteAsync { result, error ->
+
                     if (result != null) {
                         Platform.runLater {
                             onSuccess(result)
@@ -170,6 +177,8 @@ object Server {
                             onFail(RuntimeException("Both result and error were null!"))
                         }
                     }
+
+                    //Context.isWaitingForResponse.value = false
                 }
     }
 }
