@@ -1,7 +1,6 @@
 package codefest.common.data
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import codefest.common.data.Challenge
 
 /**
  *

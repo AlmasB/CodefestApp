@@ -1,6 +1,5 @@
 package codefest.server
 
-//import org.eclipse.jetty.util.security.Credential.MD5.digest
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.*

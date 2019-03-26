@@ -1,8 +1,5 @@
 package codefest.client
 
-import javafx.fxml.FXML
-import javafx.scene.control.Button
-
 /**
  *
  * @author Almas Baimagambetov (almaslvl@gmail.com)
