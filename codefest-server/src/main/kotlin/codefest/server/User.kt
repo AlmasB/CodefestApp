@@ -13,6 +13,7 @@ data class User(
          * Password in encrypted form.
          */
         val password: String,
+        val secretKey: String,
         var runtimeID: Long = 0,
         val lastAccess: Long = 0
 ) {
