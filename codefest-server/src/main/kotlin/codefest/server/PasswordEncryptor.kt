@@ -54,7 +54,6 @@ private class AESEncryptor : PasswordEncryptor {
         setKey(secret)
         val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
-        println(Base64.getEncoder().encodeToString(cipher.doFinal(password.toByteArray(charset("UTF-8")))))
         return Base64.getEncoder().encodeToString(cipher.doFinal(password.toByteArray(charset("UTF-8"))))
     }
 }
