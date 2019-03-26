@@ -1,7 +1,6 @@
 package codefest.client
 
-import javafx.beans.property.BooleanProperty
-import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.*
 import javafx.event.Event
 import javafx.event.EventHandler
 import javafx.event.EventType
@@ -14,8 +13,19 @@ import javafx.scene.layout.StackPane
  */
 class Context {
 
-    val isLoggedIn = SimpleBooleanProperty(false)
+
     val isWaitingForResponse = SimpleBooleanProperty(false)
+
+    /**
+     * Current runtimeID of this client.
+     * Set to -1 if not connected to server.
+     */
+    val clientID = SimpleLongProperty(-1)
+
+    private val isLoggedInWrapper = ReadOnlyBooleanWrapper().apply { bind(clientID.greaterThan(-1)) }
+
+    val isLoggedIn: ReadOnlyBooleanProperty
+        get() = isLoggedInWrapper.readOnlyProperty
 
     // TODO: rename Server -> client
     val client = Server

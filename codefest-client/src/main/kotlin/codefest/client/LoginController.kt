@@ -89,17 +89,17 @@ class LoginController {
         val pass = fieldPassword.text
 
         Server.requestLogin(firstName, lastName, pass) {
-            onSuccess = {
-                if (it < 0){
+            onSuccess = { id ->
+                if (id < 0){
+                    log.debug("Login failed")
+
                     pushMessage("Unable to log in. Incorrect name or password.")
                 } else{
+                    log.debug("Logged in to server with id=$id")
+
+                    context.clientID.value = id
                     context.showMain()
                 }
-
-                println("Got id: $it")
-            }
-
-            onFailure = {
             }
         }
     }

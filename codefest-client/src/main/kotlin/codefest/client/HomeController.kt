@@ -12,7 +12,7 @@ class HomeController {
     fun onLogOut() {
         Server.requestLogout {
             onSuccess = {
-                context.isLoggedIn.value = false
+                context.clientID.value = -1
 
                 context.showLogin()
             }
