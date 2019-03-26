@@ -15,17 +15,23 @@
             fx:id="root"
             prefHeight="600.0" prefWidth="800.0">
 
-    <top>
-        <HBox spacing="10">
-            <padding>
-                <Insets topRightBottomLeft="5" />
-            </padding>
+    <stylesheets>
+        <URL value="@main.css" />
+    </stylesheets>
 
-            <Button text="Home" onAction="#onHome" />
-            <Button text="Leaderboard" onAction="#onLeaderboard" />
-            <Button text="Challenges" onAction="#onChallenges" />
-        </HBox>
-    </top>
+    <center>
+        <TabPane>
+            <Tab text="Home" closable="false">
+                <fx:include source="home.fxml"/>
+            </Tab>
+            <Tab fx:id="tabLeaderboard" text="Leaderboard" closable="false">
+                <fx:include fx:id="leaderboard" source="leaderboard.fxml"/>
+            </Tab>
+            <Tab text="Challenges" closable="false">
+                <fx:include source="submit.fxml"/>
+            </Tab>
+        </TabPane>
+    </center>
 
     <bottom>
         <Label text="Info area" />

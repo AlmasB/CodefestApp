@@ -7,8 +7,8 @@ import com.almasb.sslogger.LoggerLevel
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.event.EventHandler
-import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
+import javafx.scene.layout.Pane
 import javafx.stage.Stage
 
 /**
@@ -20,9 +20,14 @@ class CodefestClientApp : Application() {
 
     private var exitRequested = false
 
+    private val context = Context()
+
     override fun start(stage: Stage) {
         stage.minWidth = 800.0
         stage.minHeight = 600.0
+
+        stage.width = 800.0
+        stage.height = 600.0
 
         stage.title = "Codefest Client"
         stage.onCloseRequest = EventHandler {
@@ -31,13 +36,25 @@ class CodefestClientApp : Application() {
             onExit()
         }
 
-        stage.scene = Scene(FXMLLoader.load(javaClass.getResource("login.fxml")))
+        stage.scene = Scene(context.root)
+
+        context.showLogin()
+
         stage.show()
+    }
+
+    override fun stop() {
+        Logger.close()
     }
 
     private fun onExit() {
         if (exitRequested)
             return
+
+        if (!context.isLoggedIn.value) {
+            Platform.exit()
+            return
+        }
 
         Server.requestLogout {
             onSuccess = {

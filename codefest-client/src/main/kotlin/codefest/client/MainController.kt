@@ -1,8 +1,8 @@
 package codefest.client
 
 import javafx.fxml.FXML
-import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
+import javafx.scene.control.Tab
+import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 
 /**
@@ -12,31 +12,15 @@ import javafx.scene.layout.BorderPane
 class MainController {
 
     @FXML
-    private lateinit var root: BorderPane
-
-    private val views = hashMapOf<String, Parent>()
+    private lateinit var tabLeaderboard: Tab
+    @FXML
+    private lateinit var leaderboardController: LeaderboardController
 
     fun initialize() {
-        onHome()
-    }
-
-    fun onHome() {
-        setView("home.fxml")
-    }
-
-    fun onLeaderboard() {
-        setView("top.fxml")
-    }
-
-    fun onChallenges() {
-        setView("submit.fxml")
-    }
-
-    private fun setView(viewName: String) {
-        if (viewName !in views) {
-            views[viewName] = FXMLLoader.load(javaClass.getResource(viewName))
+        tabLeaderboard.selectedProperty().addListener { _, _, isSelected ->
+            if (isSelected) {
+                leaderboardController.requestLeaderboard()
+            }
         }
-
-        root.center = views[viewName]
     }
 }

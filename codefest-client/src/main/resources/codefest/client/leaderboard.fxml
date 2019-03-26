@@ -8,14 +8,15 @@
 
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
-<StackPane xmlns="http://javafx.com/javafx"
+<VBox xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="codefest.client.TopController">
+            fx:controller="codefest.client.LeaderboardController">
 
     <stylesheets>
         <URL value="@main.css" />
     </stylesheets>
 
+    <Text fx:id="leaderboardHeader" />
     <ListView fx:id="listView" />
 
-</StackPane>
+</VBox>

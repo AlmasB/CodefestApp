@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<?import javafx.scene.text.Text?>
 <?import java.net.URL?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<StackPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="codefest.client.LoginController">
+<BorderPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="codefest.client.LoginController">
 
-    <VBox spacing="5" alignment="CENTER" maxWidth="250">
+    <stylesheets>
+        <URL value="@login.css" />
+    </stylesheets>
 
-        <Label fx:id="labelStatus" text="Server status: " />
+    <center>
+        <VBox alignment="CENTER" maxWidth="250" spacing="10" BorderPane.alignment="CENTER">
 
-        <Separator />
+            <Label fx:id="labelStatus" text="Server status: " />
 
-        <TextField fx:id="fieldFirstName" promptText="First name" text="Almas" />
-        <TextField fx:id="fieldLastName" promptText="Last name" text="Baim" />
-        <PasswordField fx:id="fieldPassword" promptText="Password" text="test" />
+            <Separator />
 
-        <Button fx:id="btnLogin" text="Login" onAction="#onLogin" prefWidth="100" />
+            <TextField fx:id="fieldFirstName" onAction="#onLogin" promptText="First name" text="Almas" />
+            <TextField fx:id="fieldLastName" onAction="#onLogin" promptText="Last name" text="Baim" />
+            <PasswordField fx:id="fieldPassword" onAction="#onLogin" promptText="Password" text="test" />
 
-    </VBox>
-
-</StackPane>
+            <Button id="signin_button" fx:id="btnLogin" maxWidth="1.7976931348623157E308" onAction="#onLogin" text="Sign in" HBox.hgrow="ALWAYS" />
+            <Button id="register_button" fx:id="btnRegister" mnemonicParsing="false" onAction="#onRegister" prefHeight="27.0" prefWidth="100.0" text="Register" />
+        </VBox>
+    </center>
+    <bottom>
+        <VBox fx:id="boxServerMessages" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5" BorderPane.alignment="CENTER" />
+    </bottom>
+</BorderPane>

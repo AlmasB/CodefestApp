@@ -1,0 +1,7 @@
+.masker-indicator {
+    -fx-progress-color: white;
+}
+
+.masker {
+    -fx-background-color: rgba(17.6%, 53.7%, 94%, 0.75);
+}
