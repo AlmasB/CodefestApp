@@ -12,6 +12,7 @@ import javafx.scene.control.TextField
 import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
+import javafx.scene.shape.Circle
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
 import javafx.scene.text.Text
@@ -34,6 +35,8 @@ class LoginController {
     private lateinit var boxServerMessages: VBox
     @FXML
     private lateinit var labelStatus: Label
+    @FXML
+    private lateinit var statusIndicator: Circle
     @FXML
     private lateinit var fieldFirstName: TextField
     @FXML
@@ -60,6 +63,10 @@ class LoginController {
                 Bindings.`when`(isServerAlive).then("Server status: Alive").otherwise("Server status: Down")
         )
 
+        statusIndicator.fillProperty().bind(
+                Bindings.`when`(isServerAlive).then(Color.GREEN).otherwise(Color.RED)
+        )
+
         val shouldDisableButton = fieldFirstName.textProperty().isEmpty
                 .or(fieldLastName.textProperty().isEmpty)
                 .or(fieldPassword.textProperty().isEmpty)
@@ -70,15 +77,16 @@ class LoginController {
     }
 
     private fun sendPing() {
-        if (isServerAlive.value)
-            return
-
         log.debug("Pinging server")
 
         Server.requestPing {
             onSuccess = {
                 log.debug("Got pong from server")
                 isServerAlive.value = true
+            }
+            onFailure = {
+                log.debug("No pong from server")
+                isServerAlive.value = false
             }
         }
     }

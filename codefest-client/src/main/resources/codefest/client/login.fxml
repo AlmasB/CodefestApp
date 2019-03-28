@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
 <BorderPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="codefest.client.LoginController">
 
@@ -19,7 +20,10 @@
     <center>
         <VBox alignment="CENTER" maxWidth="250" spacing="10" BorderPane.alignment="CENTER">
 
-            <Label fx:id="labelStatus" text="Server status: " />
+            <HBox alignment="CENTER" spacing="10">
+                <Circle fx:id="statusIndicator" stroke="#121212" radius="7"/>
+                <Label fx:id="labelStatus" text="Server status: " />
+            </HBox>
 
             <Separator />
 
